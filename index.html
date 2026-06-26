@@ -2043,18 +2043,16 @@ body{
     }
   }
 
-  window.handleGoogleSignIn = async function() {
+  window.handleGoogleSignIn = function() {
     if (!auth) {
       alert('Firebase credentials not configured. Please enter them in the config.js file.');
       return;
     }
     const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-    } catch (e) {
+    signInWithPopup(auth, provider).catch((e) => {
       console.error('Sign-in error:', e);
       alert('Sign-in failed: ' + e.message);
-    }
+    });
   };
 
   window.handleGoogleSignOut = async function() {
