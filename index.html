@@ -9738,31 +9738,36 @@
       document.getElementById('fuelCount').value = String(fuelCount);
       renderFuelRows(fuelCount);
 
-      fuelRows.forEach((x, i) => {
-        const tr = document.querySelectorAll('#fuelRows tr')[i];
-        if (!tr) return;
-        const voyageNo = readNodeText(x, 'VoyageNo') || String(i + 1);
-        if (tr.querySelector('.voyage-number')) tr.querySelector('.voyage-number').value = voyageNo;
-        tr.dataset.voyageNo = voyageNo;
-        const fuelName = readNodeText(x, 'FuelName');
-        tr.querySelector('.fuel-select').value = fuelName;
-        updateFuelRow(i, true);
-        tr.querySelector('.pospoc').value = readNodeText(x, 'PoSPoC') || 'NO';
-        if (tr.querySelector('.ice-class-select')) tr.querySelector('.ice-class-select').value = readNodeText(x, 'IceClass') || 'NA';
-        if (tr.querySelector('.through-ice-select')) tr.querySelector('.through-ice-select').value = readNodeText(x, 'ThroughIce') || 'NO';
-        if (tr.querySelector('.distance-nm')) tr.querySelector('.distance-nm').value = readNodeText(x, 'DistanceNm') || '';
-        if (tr.querySelector('.ice-distance-nm')) tr.querySelector('.ice-distance-nm').value = readNodeText(x, 'IceDistanceNm') || '';
-        tr.querySelector('.qty100').value = readNodeText(x, 'Qty100');
-        tr.querySelector('.qty50').value = readNodeText(x, 'Qty50');
-        tr.dataset.lcvMode = readNodeText(x, 'LcvMode') || 'base';
-        tr.dataset.customLcv = readNodeText(x, 'CustomLcv') || '';
-        tr.dataset.eMode = readNodeText(x, 'EMode') || 'base';
-        tr.dataset.customE = readNodeText(x, 'CustomE') || '';
-        tr.dataset.eValue = readNodeText(x, 'EValue') || '';
-        tr.dataset.euMode = readNodeText(x, 'EuMode') || 'base';
-        tr.dataset.customEu = readNodeText(x, 'CustomEu') || '';
-        updateFuelRow(i, false);
-      });
+      window.__isImporting = true;
+      try {
+        fuelRows.forEach((x, i) => {
+          const tr = getVirtualRow(i);
+          if (!tr) return;
+          const voyageNo = readNodeText(x, 'VoyageNo') || String(i + 1);
+          if (tr.querySelector('.voyage-number')) tr.querySelector('.voyage-number').value = voyageNo;
+          tr.dataset.voyageNo = voyageNo;
+          const fuelName = readNodeText(x, 'FuelName');
+          if (tr.querySelector('.fuel-select')) tr.querySelector('.fuel-select').value = fuelName;
+          updateFuelRow(i, true);
+          if (tr.querySelector('.pospoc')) tr.querySelector('.pospoc').value = readNodeText(x, 'PoSPoC') || 'NO';
+          if (tr.querySelector('.ice-class-select')) tr.querySelector('.ice-class-select').value = readNodeText(x, 'IceClass') || 'NA';
+          if (tr.querySelector('.through-ice-select')) tr.querySelector('.through-ice-select').value = readNodeText(x, 'ThroughIce') || 'NO';
+          if (tr.querySelector('.distance-nm')) tr.querySelector('.distance-nm').value = readNodeText(x, 'DistanceNm') || '';
+          if (tr.querySelector('.ice-distance-nm')) tr.querySelector('.ice-distance-nm').value = readNodeText(x, 'IceDistanceNm') || '';
+          if (tr.querySelector('.qty100')) tr.querySelector('.qty100').value = readNodeText(x, 'Qty100');
+          if (tr.querySelector('.qty50')) tr.querySelector('.qty50').value = readNodeText(x, 'Qty50');
+          tr.dataset.lcvMode = readNodeText(x, 'LcvMode') || 'base';
+          tr.dataset.customLcv = readNodeText(x, 'CustomLcv') || '';
+          tr.dataset.eMode = readNodeText(x, 'EMode') || 'base';
+          tr.dataset.customE = readNodeText(x, 'CustomE') || '';
+          tr.dataset.eValue = readNodeText(x, 'EValue') || '';
+          tr.dataset.euMode = readNodeText(x, 'EuMode') || 'base';
+          tr.dataset.customEu = readNodeText(x, 'CustomEu') || '';
+          updateFuelRow(i, false);
+        });
+      } finally {
+        window.__isImporting = false;
+      }
 
       const windApplicable = readNodeText(partA, 'WindApplicable') || 'NO';
       document.getElementById('windApplicable').value = windApplicable;
@@ -9929,10 +9934,10 @@
       updateWindDisplay(); updatePeriodSummary();
       renderFuelRows(3);
       document.querySelectorAll('#fuelRows tr').forEach(tr => {
-        tr.querySelector('.pospoc').value = 'NO';
-        tr.querySelector('.fuel-select').value = '';
-        tr.querySelector('.qty100').value = '';
-        tr.querySelector('.qty50').value = '';
+        if (tr.querySelector('.pospoc')) tr.querySelector('.pospoc').value = 'NO';
+        if (tr.querySelector('.fuel-select')) tr.querySelector('.fuel-select').value = '';
+        if (tr.querySelector('.qty100')) tr.querySelector('.qty100').value = '';
+        if (tr.querySelector('.qty50')) tr.querySelector('.qty50').value = '';
       });
       recalculateAll();
     }
