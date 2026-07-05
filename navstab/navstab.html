@@ -4966,14 +4966,18 @@ function calcHoltrop() {
 <script>
 // NAVSTAB HEADER BUTTONS AND USER GUIDE — injected
 function navstabGoBack() {
-  if (window.history && window.history.length > 1) {
+  const homePage = document.getElementById('page-home');
+  if (homePage && !homePage.classList.contains('active')) {
+    showPage('home');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else if (window.history && window.history.length > 1) {
     window.history.back();
   } else {
     navstabGoHome();
   }
 }
 function navstabGoHome() {
-  window.location.href = '/app.html';
+  window.location.href = '../app.html';
 }
 function openNavstabGuide() {
   const guide = document.getElementById('navstab-guide');
@@ -5159,6 +5163,102 @@ document.addEventListener('keydown', function(e) {
     document.close();
   }
 </script>
+
+<!-- ─── MOBILE COMPACT LAYOUT — tightens spacing, type scale, and grids on small screens ─── -->
+<style id="navstab-mobile-compact-final">
+@media (max-width: 900px) {
+  header { padding: 8px 10px !important; row-gap: 6px !important; }
+  .header-guide-btn { padding: 0 10px !important; font-size: .66rem !important; }
+
+  .sec-pad, .rt-wrap, .chart-outer, .tab0-cell { padding: 12px 14px !important; }
+  .sec-gap { gap: 12px !important; }
+  .footnote { padding: 8px 14px 10px !important; font-size: 9.5px !important; }
+
+  .kpi-strip { grid-template-columns: repeat(2, 1fr) !important; }
+  .kpi-card { padding: 10px 12px !important; }
+  .kpi-val { font-size: 18px !important; }
+
+  .res-tabs { overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; padding: 0 6px !important; }
+  .tab { padding: 8px 12px !important; font-size: 9.5px !important; white-space: nowrap !important; }
+  .res-topbar { padding: 8px 12px !important; flex-wrap: wrap !important; gap: 8px !important; }
+  .res-title { font-size: 13px !important; }
+
+  .chart-box { height: 240px !important; min-height: 200px !important; }
+  .chart-controls { gap: 8px !important; }
+  .chart-legend { gap: 10px !important; font-size: 9px !important; }
+  .xls-btn, .cvt-btn { font-size: 9px !important; padding: 4px 8px !important; }
+
+  .rt-wrap { overflow-x: auto !important; }
+  .rtable { min-width: 480px !important; }
+  .rtable th, .rtable td { padding: 7px 8px !important; font-size: 10.5px !important; }
+  .spc-table th, .spc-table td { padding: 5px 8px !important; font-size: 10px !important; }
+  .spc-table-scroll { max-height: 200px !important; }
+
+  .grid4 { grid-template-columns: repeat(2, 1fr) !important; }
+  .grid3 { grid-template-columns: repeat(2, 1fr) !important; }
+  .grid2 { grid-template-columns: 1fr !important; }
+  .citem { padding: 8px 10px !important; }
+  .cval { font-size: 12px !important; }
+
+  .grid-4, .grid-3 { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+  .grid-2 { grid-template-columns: 1fr !important; gap: 10px !important; }
+
+  div[style*="grid-template-columns:repeat(3,1fr)"],
+  div[style*="grid-template-columns: repeat(3,1fr)"],
+  div[style*="grid-template-columns: repeat(3, 1fr)"] { grid-template-columns: 1fr !important; }
+  .cs-top { padding: 1rem 1rem .75rem !important; }
+  .cs-tags { padding: 0 1rem .75rem !important; }
+  .cs-footer { padding: .6rem 1rem !important; }
+
+  .frow { padding: 3px 14px !important; }
+  .frow input[type="number"], .finput-wrap input[type="number"], .sidebar-drawer input[type="number"] { width: 84px !important; font-size: 11px !important; }
+  .frow select, .finput-wrap select, .sidebar-drawer select { width: 100px !important; }
+
+  .navstab-page-footer { padding: 10px 4vw 12px !important; }
+
+  /* ── calculator pages: Design Coefficients, Transverse Stability, TPC, Trim, Roll, etc. ── */
+  main { padding: 14px 12px !important; }
+  .section-header { margin-bottom: 1rem !important; gap: .6rem !important; }
+  .section-title { font-size: 1.3rem !important; letter-spacing: .5px !important; }
+  .dashboard-back-wrap { margin-bottom: .8rem !important; }
+  .dashboard-back-btn { padding: 7px 14px !important; font-size: .72rem !important; }
+  .card { padding: .9rem !important; }
+  .card-title { font-size: .82rem !important; letter-spacing: 1px !important; margin-bottom: .8rem !important; }
+  .field { margin-bottom: .65rem !important; }
+  .field label { font-size: .62rem !important; margin-bottom: 4px !important; }
+  .field input, .field select { padding: 8px 10px !important; font-size: .82rem !important; }
+  .btn { padding: 8px 16px !important; font-size: .72rem !important; letter-spacing: 1px !important; }
+  .calc-actions { gap: .5rem !important; margin-top: .2rem !important; }
+  .calc-layout, #coeff-layout { gap: .9rem !important; }
+  .subtabs { gap: 2px !important; margin-bottom: .9rem !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; flex-wrap: nowrap !important; }
+  .subtab { padding: 6px 12px !important; font-size: .68rem !important; white-space: nowrap !important; }
+  .result-box { padding: .7rem .8rem !important; margin-top: .7rem !important; }
+  .result-label { font-size: .64rem !important; }
+  .result-value { font-size: .88rem !important; }
+  .info-panel, .warning-box { padding: .7rem .8rem !important; font-size: .74rem !important; line-height: 1.5 !important; margin-bottom: 1rem !important; }
+  .data-table { font-size: .72rem !important; }
+  .data-table th, .data-table td { padding: 6px 8px !important; }
+  .metric-card { padding: .8rem !important; }
+  .metric-value { font-size: 1.25rem !important; }
+}
+
+@media (max-width: 480px) {
+  .kpi-strip { grid-template-columns: repeat(2, 1fr) !important; }
+  .kpi-val { font-size: 16px !important; }
+  .chart-box { height: 200px !important; }
+  .rtable th, .rtable td { font-size: 10px !important; padding: 6px 7px !important; }
+  .grid4, .grid3, .grid-4, .grid-3 { grid-template-columns: 1fr !important; }
+  .tab-label { display: none !important; }
+  .tab { padding: 8px 10px !important; }
+
+  .section-title { font-size: 1.1rem !important; }
+  .card { padding: .7rem !important; }
+  .card-title { font-size: .74rem !important; }
+  .btn { padding: 7px 12px !important; font-size: .68rem !important; }
+  .data-table { display: block !important; overflow-x: auto !important; white-space: nowrap !important; }
+  .metric-value { font-size: 1.1rem !important; }
+}
+</style>
 
 </body>
 </html>
