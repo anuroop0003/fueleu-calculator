@@ -298,61 +298,6 @@
 </script>
 
 
-<script src="config.js"></script>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-  let app, auth;
-
-  function initFirebase() {
-    const config = window.firebaseConfig;
-    if (config && config.apiKey) {
-      app = initializeApp(config);
-      auth = getAuth(app);
-
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          // Already logged in, redirect
-          window.location.href = "app.html";
-        }
-      });
-    } else {
-      console.error("Firebase config not found!");
-    }
-  }
-
-  window.handleGoogleSignIn = function() {
-    const btn = document.getElementById('btnGoogleSignIn');
-    btn.classList.add('loading');
-    const provider = new GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: 'select_account' });
-    
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        window.location.href = "app.html";
-      })
-      .catch((error) => {
-        console.error("Error signing in with Google: ", error);
-        btn.classList.remove('loading');
-      });
-  };
-
-  document.addEventListener('DOMContentLoaded', () => {
-    initFirebase();
-    
-    document.getElementById('btnGoogleSignIn').addEventListener('click', (e) => {
-      e.preventDefault();
-      window.handleGoogleSignIn();
-    });
-
-    document.getElementById('btnGuest').addEventListener('click', (e) => {
-      e.preventDefault();
-      // Proceed as guest
-      window.location.href = "app.html";
-    });
-  });
-</script>
 </body>
 
 </html>
