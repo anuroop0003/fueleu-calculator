@@ -2257,9 +2257,17 @@
     <div class="header-titles">
       <h1>EU MRV &amp; FuelEU Maritime — Voyage Classification Tool</h1>
     </div>
-    <div class="header-right">
-      <button class="help-btn" type="button" onclick="openHelp()" aria-label="Help"
-        title="Help — How this tool works">?</button>
+    <div class="header-right" style="display:flex; align-items:center; gap:12px;">
+      <div id="userProfileInfo" style="display:none; align-items:center; gap:10px;">
+        <img id="userAvatar" src="" style="width:34px; height:34px; border-radius:50%; border:2px solid var(--accent);" alt="User Avatar"/>
+        <div style="display:flex; flex-direction:column; line-height:1.2; color:white;">
+          <span id="userDropdownName" style="font-size:12px; font-weight:bold;"></span>
+          <span id="userDropdownEmail" style="font-size:10px; color:#8fa8cc;"></span>
+        </div>
+        <button class="nav-btn" onclick="handleGoogleSignOut()" title="Sign Out" style="width:auto; padding:0 10px; font-size:11px;">Sign Out</button>
+      </div>
+      <button class="nav-btn" id="btnGoogleSignIn" onclick="handleGoogleSignIn()" title="Sign in with Google" style="width:auto; padding:0 12px; font-size:12px; font-weight:bold; background:white; color:var(--navy);">Sign In</button>
+      <button class="help-btn" type="button" onclick="openHelp()" aria-label="Help" title="Help — How this tool works">?</button>
     </div>
   </header>
 
@@ -2992,6 +3000,8 @@
             <span class="save-flash" id="registrySaveFlash">✓ Saved</span>
             <button class="registry-xml-btn save" type="button" onclick="savePortRegistryXML()"
               title="Save Port Classification Registry as XML">💾 Save XML</button>
+            <button class="registry-xml-btn sync" type="button" onclick="syncPortRegistryToCloud()"
+              title="Sync Port Classification Registry Data" style="background:#4285F4; color:white;">☁️ Sync Data</button>
             <button class="registry-xml-btn import" type="button"
               onclick="document.getElementById('registryXmlImportInput').click()"
               title="Import Port Classification Registry XML">⬆ Import XML</button>
@@ -3071,27 +3081,24 @@
     <span class="footer-sub">EU MRV &amp; FuelEU Maritime — Voyage Classification Tool</span>
   </footer>
 
-  <!-- ══ GOOGLE DRIVE SAVE POPUP ══ -->
+  <!-- ══ CLOUD SYNC POPUP ══ -->
   <div id="gdrivePopupOverlay">
     <div id="gdrivePopupBox">
       <div class="gd-head">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M8.05 2 1 14l3.55 6 7.05-12L8.05 2Z" fill="#0F9D58" />
-          <path d="M15.95 2 23 14l-3.55 6-7.05-12L15.95 2Z" fill="#FFCF48" transform="translate(-8 0)" />
-          <path d="M8 20h9.9L21.45 14H4.55L8 20Z" fill="#4285F4" />
+          <path d="M19 11h-1.56a5.98 5.98 0 0 0-11.2 0H6a4 4 0 0 0 0 8h13a4 4 0 0 0 0-8z" fill="#4285F4"/>
         </svg>
         <h3>Category Updated</h3>
       </div>
       <div class="gd-body">
         <span id="gdrivePopupPortLabel">Your MRV / FuelEU category change is applied for this session only.</span> It
-        has <strong>not</strong> been saved in the app itself — save a backup to Google Drive now to keep it, otherwise
+        has <strong>not</strong> been saved in the app itself — save a backup now to keep it, otherwise
         it will be lost on reload.
-        <div class="gd-detail">This downloads a Port_Classification_Registry.xml file and opens Google Drive in a new
-          tab, where you can drop it in. Next time, use ⬆ Import XML to load it back in.</div>
+        <div class="gd-detail">This will sync your Port Classification Registry data so it can be restored later.</div>
       </div>
       <div class="gd-foot">
         <button class="gd-btn-skip" onclick="closeGDrivePopup()">Not Now</button>
-        <button class="gd-btn-save" onclick="saveRegistryToGoogleDrive()">📤 Save to Google Drive</button>
+        <button class="gd-btn-save" onclick="syncPortRegistryToCloud()" style="background:#4285F4;">☁️ Sync Data</button>
       </div>
     </div>
   </div>
@@ -5424,14 +5431,11 @@
       document.getElementById('gdrivePopupOverlay').classList.remove('open');
     }
 
-    function saveRegistryToGoogleDrive() {
-      // The app has no server-side component and cannot authenticate to a user's
-      // Google account directly from a local HTML file, so this downloads the
-      // registry XML (same as "Save XML") and opens Google Drive in a new tab so
-      // the user can upload/drop the file in themselves.
-      savePortRegistryXML();
-      window.open('https://drive.google.com/drive/my-drive', '_blank');
+    function syncPortRegistryToCloud() {
       closeGDrivePopup();
+      if (typeof window.openCloudModal === 'function') {
+        window.openCloudModal();
+      }
     }
 
     const gdriveOverlayEl = document.getElementById('gdrivePopupOverlay');
@@ -5464,6 +5468,269 @@
     });
   </script>
 
+
+  <!-- ══ CLOUD BACKUP MODAL ══ -->
+  <div class="modal-overlay" id="cloudModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
+    <div class="modal-card" style="width: min(700px, 100%); background: #132040; color: white; padding: 22px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px;">
+        <h3 style="margin: 0; font-size: 20px; color: #fff; display: flex; align-items: center; gap: 8px;">
+          <span style="color: var(--accent);">☁</span> Cloud Backup & Saves
+        </h3>
+        <button onclick="closeCloudModal()" style="background: none; border: none; color: #8fa8cc; font-size: 20px; cursor: pointer;">✕</button>
+      </div>
+      <div id="tabContentFirestore">
+        <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+          <input type="text" id="cloudSaveName" placeholder="Enter case name to save" style="flex: 1; padding: 10px 12px; font-size: 13px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white;">
+          <button class="btn btn-primary" onclick="saveToFirestore()" style="font-size: 13px; border-radius: 8px; background: var(--eu-gold); color: white; border: none; padding: 0 16px; cursor: pointer;">Save Case</button>
+        </div>
+        <div id="firestoreCasesList" style="max-height: 250px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; background: rgba(255,255,255,0.02);">
+          <div style="padding: 16px; text-align: center; color: #8fa8cc; font-size: 13px;">Loading cases...</div>
+        </div>
+      </div>
+      <div class="modal-actions" style="margin-top: 18px; display: flex; justify-content: flex-end;">
+        <button class="btn btn-secondary" onclick="closeCloudModal()" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 8px; padding: 8px 16px; cursor: pointer;">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .cloud-case-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .cloud-case-item:last-child { border-bottom: none; }
+    .cloud-case-info { flex: 1; }
+    .cloud-case-title { font-weight: bold; color: white; margin-bottom: 4px; font-size: 14px; }
+    .cloud-case-meta { font-size: 11px; color: #8fa8cc; }
+    .cloud-case-actions { display: flex; gap: 8px; }
+    .cloud-case-actions button { padding: 6px 10px; font-size: 11px; border-radius: 6px; font-weight: 600; cursor: pointer; border: none; }
+    .btn-success { background: #1a7a4a; color: white; }
+    .btn-reset { background: #b03000; color: white; }
+  </style>
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="../config.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDocs, collection, query, where, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    let db, auth;
+
+    window.openCloudModal = function () {
+      document.getElementById('cloudModal').style.display = 'flex';
+      const saveNameInput = document.getElementById('cloudSaveName');
+      if (saveNameInput) saveNameInput.value = 'Port Registry ' + new Date().toLocaleDateString();
+      if(auth && auth.currentUser) loadFirestoreCases();
+    };
+
+    window.closeCloudModal = function () {
+      document.getElementById('cloudModal').style.display = 'none';
+    };
+
+    window.generateStateXml = function() {
+      const entries = getSortedRegistryEntries();
+      const xmlRows = entries.map(e => `  <port code="${xmlEscape(e.code)}" mrv_category="${xmlEscape(e.mrv_category)}" fueleu_category="${xmlEscape(e.fueleu_category)}" source="${xmlEscape(e.source || '')}">${xmlEscape(e.name || '')}</port>`).join('\\n');
+      return `<?xml version="1.0" encoding="UTF-8"?>\\n<portRegistry>\\n${xmlRows}\\n</portRegistry>`;
+    };
+
+    window.importXmlFromText = function(xmlText) {
+      const xmlDoc = new DOMParser().parseFromString(xmlText, 'application/xml');
+      if (xmlDoc.getElementsByTagName('parsererror').length) throw new Error('Invalid XML data.');
+      const ports = Array.from(xmlDoc.getElementsByTagName('port'));
+      if (!ports.length) throw new Error('No port entries found.');
+      
+      let added = 0, updated = 0;
+      ports.forEach(p => {
+        const code = String(p.getAttribute('code') || '').trim().toUpperCase();
+        if (!code) return;
+        const mrv_category = normaliseXmlCategory(p.getAttribute('mrv_category'), 'NONEEA');
+        const fueleu_category = normaliseXmlCategory(p.getAttribute('fueleu_category'), mrv_category);
+        const sourceRaw = String(p.getAttribute('source') || 'custom').trim().toLowerCase();
+        const source = (sourceRaw === 'default') ? 'default' : (sourceRaw === 'auto' ? 'auto' : 'custom');
+        const name = String(p.textContent || '').trim();
+        const existingIdx = window.PORT_REGISTRY.findIndex(x => x.code === code);
+        if (existingIdx >= 0) {
+          const ex = window.PORT_REGISTRY[existingIdx];
+          if (ex.mrv_category !== mrv_category || ex.fueleu_category !== fueleu_category || ex.name !== name || ex.source !== source) {
+            window.PORT_REGISTRY[existingIdx] = { code, name, mrv_category, fueleu_category, source };
+            updated++;
+          }
+        } else {
+          window.PORT_REGISTRY.push({ code, name, mrv_category, fueleu_category, source });
+          added++;
+        }
+      });
+      savePortRegistryToLocalStorage();
+      renderPortRegistry();
+      refreshVoyageTables();
+    };
+
+    function initFirebase() {
+      const config = window.firebaseConfig;
+      if (config && config.apiKey) {
+        const app = initializeApp(config);
+        db = getFirestore(app);
+        auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            document.getElementById('btnGoogleSignIn').style.display = 'none';
+            document.getElementById('userProfileInfo').style.display = 'flex';
+            document.getElementById('userAvatar').src = user.photoURL || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
+            document.getElementById('userDropdownName').textContent = user.displayName || 'User';
+            document.getElementById('userDropdownEmail').textContent = user.email || '';
+            loadFirestoreCases();
+          } else {
+            document.getElementById('btnGoogleSignIn').style.display = 'block';
+            document.getElementById('userProfileInfo').style.display = 'none';
+          }
+        });
+      }
+    }
+
+    window.handleGoogleSignIn = function () {
+      if (!auth) {
+        alert('Firebase credentials not configured. Please enter them in the config.js file.');
+        return;
+      }
+      const provider = new GoogleAuthProvider();
+      signInWithPopup(auth, provider).catch((e) => {
+        console.error('Sign-in error:', e);
+        alert('Sign-in Failed: ' + e.message);
+      });
+    };
+
+    window.handleGoogleSignOut = async function () {
+      if (!auth) return;
+      try {
+        await signOut(auth);
+      } catch (e) {
+        console.error('Sign-out error:', e);
+      }
+    };
+
+    async function loadFirestoreCases() {
+      const listEl = document.getElementById('firestoreCasesList');
+      if (!listEl) return;
+      const user = auth?.currentUser;
+      if (!user || !db) return;
+
+      listEl.innerHTML = '<div style="padding: 16px; text-align: center; color: #8fa8cc; font-size: 13px;">Loading cases...</div>';
+
+      try {
+        const q = query(collection(db, "cases"), where("userId", "==", user.uid));
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+          listEl.innerHTML = '<div style="padding: 24px; text-align: center; color: #8fa8cc; font-size: 13.5px;">No saved cases found in cloud.</div>';
+          return;
+        }
+
+        listEl.innerHTML = '';
+        let renderCount = 0;
+        const currentCalcType = 'PortRegistry';
+        querySnapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          if (data.calculator && data.calculator !== currentCalcType) return;
+          renderCount++;
+          const item = document.createElement('div');
+          item.className = 'cloud-case-item';
+
+          const info = document.createElement('div');
+          info.className = 'cloud-case-info';
+
+          const title = document.createElement('div');
+          title.className = 'cloud-case-title';
+          title.textContent = data.caseName;
+
+          const meta = document.createElement('div');
+          meta.className = 'cloud-case-meta';
+          const dateStr = data.updatedAt ? new Date(data.updatedAt).toLocaleString() : 'N/A';
+          meta.textContent = `Type: ${data.calculator || 'Port Registry'} | Saved: ${dateStr}`;
+
+          info.appendChild(title);
+          info.appendChild(meta);
+
+          const actions = document.createElement('div');
+          actions.className = 'cloud-case-actions';
+
+          const loadBtn = document.createElement('button');
+          loadBtn.className = 'btn-success';
+          loadBtn.textContent = 'Load';
+          loadBtn.onclick = () => {
+            try {
+              window.importXmlFromText(data.xmlText);
+              window.closeCloudModal();
+              alert(`Registry "${data.caseName}" successfully loaded from cloud.`);
+            } catch (e) {
+              alert('Failed to load registry data: ' + e.message);
+            }
+          };
+
+          const delBtn = document.createElement('button');
+          delBtn.className = 'btn-reset';
+          delBtn.textContent = 'Delete';
+          delBtn.onclick = async () => {
+            if (confirm(`Are you sure you want to delete "${data.caseName}"?`)) {
+              try {
+                await deleteDoc(doc(db, "cases", docSnap.id));
+                loadFirestoreCases();
+              } catch (err) {
+                alert('Delete failed: ' + err.message);
+              }
+            }
+          };
+
+          actions.appendChild(loadBtn);
+          actions.appendChild(delBtn);
+          item.appendChild(info);
+          item.appendChild(actions);
+          listEl.appendChild(item);
+        });
+        if (renderCount === 0) {
+          listEl.innerHTML = '<div style="padding: 24px; text-align: center; color: #8fa8cc; font-size: 13.5px;">No saved cases found in cloud for this tool.</div>';
+        }
+      } catch (e) {
+        console.error('Error fetching cases:', e);
+        listEl.innerHTML = `<div style="padding: 16px; text-align: center; color: #ff6b81; font-size: 13px;">Error loading cases: ${e.message}</div>`;
+      }
+    }
+
+    window.saveToFirestore = async function () {
+      const caseNameInput = document.getElementById('cloudSaveName');
+      const caseName = caseNameInput?.value?.trim();
+      if (!caseName) {
+        alert('Please enter a case name.');
+        return;
+      }
+      const user = auth?.currentUser;
+      if (!user || !db) {
+        alert('Not signed in.');
+        return;
+      }
+
+      try {
+        const xmlText = window.generateStateXml();
+        const caseId = `${user.uid}_${caseName.replace(/[^a-z0-9_\\-]+/gi, '_')}`;
+        const calcType = 'PortRegistry';
+
+        await setDoc(doc(db, "cases", caseId), {
+          userId: user.uid,
+          caseName: caseName,
+          calculator: calcType,
+          xmlText: xmlText,
+          updatedAt: Date.now()
+        });
+
+        if (caseNameInput) caseNameInput.value = '';
+        loadFirestoreCases();
+        alert(`Registry "${caseName}" successfully saved to cloud.`);
+      } catch (e) {
+        console.error('Error saving case:', e);
+        alert('Failed to save case: ' + e.message);
+      }
+    };
+
+    initFirebase();
+  </script>
 
 </body>
 
