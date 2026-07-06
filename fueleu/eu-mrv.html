@@ -1470,6 +1470,61 @@
       color: var(--text-muted);
     }
 
+    /* REGIME BLOCKS — per-regulation cards (EU MRV / FuelEU Maritime) in the Summary sub-tab */
+    .regime-block {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      margin-bottom: 1.75rem;
+      overflow: hidden;
+      box-shadow: 0 3px 14px rgba(10, 22, 40, 0.08);
+    }
+
+    .regime-block:last-child {
+      margin-bottom: 0.25rem;
+    }
+
+    .regime-block-header {
+      padding: 14px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      border-bottom: 3px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .regime-block-header .rb-title {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .regime-chip {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #ffffff;
+      padding: 3px 9px;
+      border-radius: 20px;
+    }
+
+    .regime-block-header .rb-reg {
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .regime-block-body {
+      padding: 1.35rem 1.5rem 1.5rem;
+    }
+
     /* ── Fuel Popup Modal ── */
     #fuelPopupOverlay {
       display: none;
@@ -1601,6 +1656,102 @@
       background: #e0e6f0;
     }
 
+    /* ── Google Drive Save Popup ── */
+    #gdrivePopupOverlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 20, 50, 0.55);
+      z-index: 9600;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #gdrivePopupOverlay.open {
+      display: flex;
+    }
+
+    #gdrivePopupBox {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 40px rgba(0, 0, 60, 0.22);
+      width: min(420px, 92vw);
+      overflow: hidden;
+    }
+
+    #gdrivePopupBox .gd-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 18px;
+      background: linear-gradient(90deg, #1a3a6e, #1a5fa8);
+      color: #fff;
+    }
+
+    #gdrivePopupBox .gd-head svg {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+
+    #gdrivePopupBox .gd-head h3 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    #gdrivePopupBox .gd-body {
+      padding: 16px 18px 6px;
+      font-size: 13px;
+      color: #2c3e6b;
+      line-height: 1.55;
+    }
+
+    #gdrivePopupBox .gd-body .gd-detail {
+      font-size: 11px;
+      color: #6a7690;
+      margin-top: 8px;
+    }
+
+    #gdrivePopupBox .gd-foot {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      padding: 14px 18px 16px;
+    }
+
+    .gd-btn-save {
+      background: #1a7a4a;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 7px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .gd-btn-save:hover {
+      background: #155f3a;
+    }
+
+    .gd-btn-skip {
+      background: #f0f2f8;
+      color: #444;
+      border: 1px solid #ccd3e8;
+      border-radius: 6px;
+      padding: 7px 16px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .gd-btn-skip:hover {
+      background: #e0e6f0;
+    }
+
     .fuel-btn-cell {
       display: flex;
       align-items: center;
@@ -1631,6 +1782,405 @@
 
     .fuel-tick.visible {
       display: inline;
+    }
+
+    /* ============================================= */
+    /* HELP BUTTON + MODAL                            */
+    /* ============================================= */
+    .header-right {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      margin-left: 12px;
+    }
+
+    .help-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--navy-light);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #c8d6ec;
+      font-size: 17px;
+      font-weight: 800;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .help-btn:hover,
+    .help-btn:focus-visible {
+      border-color: var(--accent);
+      background: #2a4070;
+      color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.12);
+      outline: none;
+    }
+
+    .help-btn:active {
+      transform: translateY(0) scale(0.95);
+    }
+
+    .help-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(6, 12, 24, 0.62);
+      backdrop-filter: blur(2px);
+      z-index: 9800;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 3vh 16px;
+      overflow-y: auto;
+    }
+
+    .help-overlay.open {
+      display: flex;
+    }
+
+    .help-modal {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 980px;
+      margin: auto;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+      overflow: hidden;
+      animation: helpPop 0.18s ease;
+    }
+
+    @keyframes helpPop {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .help-modal-header {
+      background: var(--navy);
+      border-bottom: 3px solid var(--accent);
+      padding: 16px 22px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .help-modal-header .hm-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--eu-gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-weight: 800;
+      font-size: 17px;
+      flex-shrink: 0;
+    }
+
+    .help-modal-header h2 {
+      color: var(--white);
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      flex: 1;
+    }
+
+    .help-modal-header p {
+      color: #8fa8cc;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 2px;
+    }
+
+    .help-close-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: var(--navy-light);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #c8d6ec;
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
+      flex-shrink: 0;
+    }
+
+    .help-close-btn:hover,
+    .help-close-btn:focus-visible {
+      background: #7a1f1f;
+      border-color: #d04b4b;
+      color: #ffd7d7;
+      outline: none;
+    }
+
+    .help-close-btn:active {
+      transform: scale(0.95);
+    }
+
+    .help-body {
+      padding: 22px 26px 26px;
+      max-height: 76vh;
+      overflow-y: auto;
+    }
+
+    .help-section {
+      margin-bottom: 22px;
+    }
+
+    .help-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .help-section-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .help-section-title::before {
+      content: '';
+      width: 3px;
+      height: 13px;
+      background: var(--eu-gold);
+      border-radius: 2px;
+    }
+
+    .help-lede {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.6;
+      margin-bottom: 4px;
+    }
+
+    /* Diagram flow */
+    .help-flow {
+      display: flex;
+      align-items: stretch;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 4px 2px 10px;
+    }
+
+    .help-flow-step {
+      background: var(--eu-gold-light);
+      border: 1.5px solid #b8cbe8;
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      min-width: 165px;
+      flex: 1 1 0;
+      position: relative;
+    }
+
+    .help-flow-step .hf-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .help-flow-step .hf-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .help-flow-step .hf-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .help-flow-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #a0b4cc;
+      font-size: 18px;
+      font-weight: 700;
+      flex: 0 0 auto;
+      padding: 0 2px;
+    }
+
+    @media (max-width: 760px) {
+      .help-flow {
+        flex-direction: column;
+      }
+
+      .help-flow-arrow {
+        transform: rotate(90deg);
+        padding: 2px 0;
+      }
+    }
+
+    /* Tab overview cards */
+    .help-tab-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+    }
+
+    .help-tab-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      background: #fbfcfe;
+    }
+
+    .help-tab-card .htc-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .help-tab-card ul {
+      margin: 0;
+      padding-left: 18px;
+      font-size: 11.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .help-badge-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .help-col-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11.5px;
+    }
+
+    .help-col-table th {
+      text-align: left;
+      background: var(--navy);
+      color: #8fa8cc;
+      padding: 7px 10px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .help-col-table td {
+      padding: 6px 10px;
+      border-bottom: 1px solid #edf0f7;
+      color: var(--text);
+    }
+
+    .help-col-table tr:nth-child(even) td {
+      background: #f8fafd;
+    }
+
+    .help-footnote {
+      font-size: 11px;
+      color: var(--text-muted);
+      background: #f0f4f9;
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      margin-top: 4px;
+      line-height: 1.6;
+    }
+
+    /* Voyage scope diagram cards */
+    .scope-diagram-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+    }
+
+    .scope-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: #fbfcfe;
+      padding: 12px 14px 14px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .scope-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 2px;
+    }
+
+    .scope-card-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: 0.01em;
+    }
+
+    .scope-pct {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 20px;
+      border: 1.5px solid;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .scope-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 2px 0 6px;
+    }
+
+    .scope-node-label {
+      font-size: 9.5px;
+      font-weight: 800;
+    }
+
+    .scope-caption {
+      font-size: 8.5px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .scope-card-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin: 0;
     }
   </style>
 </head>
@@ -1707,7 +2257,379 @@
     <div class="header-titles">
       <h1>EU MRV &amp; FuelEU Maritime — Voyage Classification Tool</h1>
     </div>
+    <div class="header-right">
+      <button class="help-btn" type="button" onclick="openHelp()" aria-label="Help"
+        title="Help — How this tool works">?</button>
+    </div>
   </header>
+
+  <!-- HELP MODAL -->
+  <div class="help-overlay" id="helpOverlay">
+    <div class="help-modal" role="dialog" aria-modal="true" aria-labelledby="helpModalTitle">
+      <div class="help-modal-header">
+        <div class="hm-icon">?</div>
+        <div style="flex:1;">
+          <h2 id="helpModalTitle">How This Tool Works</h2>
+          <p>EU MRV &amp; FuelEU Maritime — Voyage Classification Guide</p>
+        </div>
+        <button class="help-close-btn" type="button" onclick="closeHelp()" aria-label="Close help">✕</button>
+      </div>
+
+      <div class="help-body">
+
+        <div class="help-section">
+          <p class="help-lede">This tool classifies vessel voyages under the <strong>EU MRV Regulation</strong> and
+            <strong>FuelEU Maritime Regulation</strong>, working out how much of each voyage's emissions and fuel use
+            falls inside EU scope. Bring in voyage data, let the tool classify each leg against the port registry, then
+            review and export the results.</p>
+        </div>
+
+        <div class="help-section">
+          <div class="help-section-title">Workflow at a Glance</div>
+          <div class="help-flow">
+            <div class="help-flow-step">
+              <div class="hf-num">1</div>
+              <div class="hf-title">📋 Input Voyages</div>
+              <div class="hf-desc">Upload an Excel file (.xlsx/.xls) or type voyages manually — ports, dates, distance
+                &amp; fuel consumption per fuel type.</div>
+            </div>
+            <div class="help-flow-arrow">→</div>
+            <div class="help-flow-step">
+              <div class="hf-num">2</div>
+              <div class="hf-title">🗂️ Port Lookup</div>
+              <div class="hf-desc">Each departure/arrival port code is checked against the Port Registry to determine
+                EEA, non‑EEA or OMR status.</div>
+            </div>
+            <div class="help-flow-arrow">→</div>
+            <div class="help-flow-step">
+              <div class="hf-num">3</div>
+              <div class="hf-title">⚙️ Classification Engine</div>
+              <div class="hf-desc">Each voyage leg is auto-classified (EEA‑EEA, EEA‑non EEA, non EEA‑EEA, EEA Port, OMR)
+                and MRV / FuelEU scope % is applied.</div>
+            </div>
+            <div class="help-flow-arrow">→</div>
+            <div class="help-flow-step">
+              <div class="hf-num">4</div>
+              <div class="hf-title">📊 Review Results</div>
+              <div class="hf-desc">Check the results table &amp; summary stats, verify CO₂ / MRV CO₂ figures per voyage
+                and in aggregate.</div>
+            </div>
+            <div class="help-flow-arrow">→</div>
+            <div class="help-flow-step">
+              <div class="hf-num">5</div>
+              <div class="hf-title">⬇ Export</div>
+              <div class="hf-desc">Download Part B import files, OMR voyage lists, or the blank voyage data template for
+                future uploads.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="help-section">
+          <div class="help-section-title">The Three Main Tabs</div>
+          <div class="help-tab-grid">
+            <div class="help-tab-card">
+              <div class="htc-head">📋 Vessel &amp; Voyage Input</div>
+              <ul>
+                <li>Upload an Excel file of voyage legs, or add rows manually</li>
+                <li>Download a ready-made Excel template with all fuel columns</li>
+                <li>Enter fuel consumption per fuel type via the ⛽ popup</li>
+              </ul>
+            </div>
+            <div class="help-tab-card">
+              <div class="htc-head">📊 Classification Results</div>
+              <ul>
+                <li>Summary stat cards: totals, CO₂ and MRV CO₂</li>
+                <li>Voyage Classification sub-tab — leg-by-leg results table</li>
+                <li>Summary by Case &amp; Fuel sub-tab — aggregated breakdown</li>
+              </ul>
+            </div>
+            <div class="help-tab-card">
+              <div class="htc-head">📖 Regulation Guide</div>
+              <ul>
+                <li>Reference material explaining MRV and FuelEU scope rules</li>
+                <li>Definitions for EEA, non‑EEA and OMR voyage categories</li>
+                <li>Background on how classification percentages are derived</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="help-section">
+          <div class="help-section-title">Voyage Classification Badges</div>
+          <div class="help-badge-legend">
+            <span class="badge badge-eea-eea">EEA–EEA</span>
+            <span class="badge badge-eea-non">EEA–non EEA</span>
+            <span class="badge badge-non-eea">non EEA–EEA</span>
+            <span class="badge badge-eea-port">EEA Port</span>
+            <span class="badge badge-omr">OMR</span>
+            <span class="badge badge-exempt">Exempt</span>
+          </div>
+          <div class="help-footnote">EEA = European Economic Area. OMR = Outermost Region. Each badge drives a different
+            MRV / FuelEU scope percentage applied to that voyage leg's emissions.</div>
+        </div>
+
+        <div class="help-section">
+          <div class="help-section-title">How Each Voyage Type Is Scoped — Diagram</div>
+          <p class="help-lede" style="font-size:12px; margin-bottom:14px;">Every voyage leg is classified by comparing
+            the <strong>departure port</strong> and <strong>arrival port</strong> against the Port Registry. The
+            combination of the two determines what share of that leg's CO₂ and fuel consumption is counted under EU MRV
+            / FuelEU Maritime. The six diagrams below show exactly how a vessel moving between ports is treated in each
+            case.</p>
+
+          <!-- Shared SVG symbol defs (invisible, reused by every diagram below) -->
+          <svg width="0" height="0" style="position:absolute;overflow:hidden;" aria-hidden="true" focusable="false">
+            <defs>
+              <symbol id="scopeShip" viewBox="0 0 64 40">
+                <path d="M2 24 L62 24 L55 34 L9 34 Z" fill="currentColor" />
+                <rect x="10" y="9" width="16" height="15" rx="1.5" fill="currentColor" />
+                <rect x="14" y="2" width="3" height="8" fill="currentColor" />
+                <rect x="30" y="15" width="9" height="9" fill="currentColor" opacity="0.7" />
+                <rect x="41" y="15" width="9" height="9" fill="currentColor" opacity="0.7" />
+                <rect x="52" y="18" width="8" height="6" fill="currentColor" opacity="0.55" />
+                <path d="M0 35 q4 3 8 0 q4 3 8 0 q4 3 8 0 q4 3 8 0 q4 3 8 0 q4 3 8 0 q4 3 8 0 q4 3 8 0" fill="none"
+                  stroke="currentColor" stroke-width="1.4" opacity="0.3" />
+              </symbol>
+            </defs>
+          </svg>
+
+          <div class="scope-diagram-grid">
+
+            <!-- CASE 1: EEA -> EEA -->
+            <div class="scope-card">
+              <div class="scope-card-head">
+                <span class="scope-card-title">① EEA → EEA</span>
+                <span class="scope-pct"
+                  style="background:var(--eea-eea-bg);color:var(--eea-eea);border-color:#a8d9bc;">100% Scope</span>
+              </div>
+              <svg viewBox="0 0 320 114" class="scope-svg">
+                <line x1="58" y1="54" x2="262" y2="54" stroke="var(--eea-eea)" stroke-width="3" />
+                <circle cx="38" cy="54" r="17" fill="var(--eea-eea-bg)" stroke="var(--eea-eea)" stroke-width="2" />
+                <text x="38" y="58" text-anchor="middle" class="scope-node-label" fill="var(--eea-eea)">EEA</text>
+                <circle cx="282" cy="54" r="17" fill="var(--eea-eea-bg)" stroke="var(--eea-eea)" stroke-width="2" />
+                <text x="282" y="58" text-anchor="middle" class="scope-node-label" fill="var(--eea-eea)">EEA</text>
+                <use href="#scopeShip" x="126" y="32" width="68" height="42" style="color:var(--eea-eea)" />
+                <text x="38" y="90" text-anchor="middle" class="scope-caption" fill="var(--text-muted)">EEA Port
+                  A</text>
+                <text x="282" y="90" text-anchor="middle" class="scope-caption" fill="var(--text-muted)">EEA Port
+                  B</text>
+                <text x="160" y="20" text-anchor="middle" class="scope-caption" fill="var(--eea-eea)"
+                  font-size="9.5">Full voyage inside EEA waters</text>
+              </svg>
+              <p class="scope-card-desc">Both the departure and arrival ports sit inside the EEA. The entire distance
+                sailed, fuel burned and CO₂ emitted on this leg is <strong>100% in scope</strong> for both EU MRV and
+                FuelEU Maritime — nothing is apportioned out.</p>
+            </div>
+
+            <!-- CASE 2: EEA -> Non-EEA -->
+            <div class="scope-card">
+              <div class="scope-card-head">
+                <span class="scope-card-title">② EEA → Non‑EEA</span>
+                <span class="scope-pct"
+                  style="background:var(--eea-non-bg);color:var(--eea-non);border-color:#e0c080;">50% Scope</span>
+              </div>
+              <svg viewBox="0 0 320 114" class="scope-svg">
+                <line x1="58" y1="54" x2="262" y2="54" stroke="var(--eea-non)" stroke-width="3"
+                  stroke-dasharray="1 0" />
+                <line x1="160" y1="46" x2="160" y2="62" stroke="var(--eea-non)" stroke-width="2"
+                  stroke-dasharray="3 3" />
+                <circle cx="38" cy="54" r="17" fill="var(--eea-eea-bg)" stroke="var(--eea-eea)" stroke-width="2" />
+                <text x="38" y="58" text-anchor="middle" class="scope-node-label" fill="var(--eea-eea)">EEA</text>
+                <circle cx="282" cy="54" r="17" fill="#f0f0f0" stroke="#bbb" stroke-width="2" />
+                <text x="282" y="57" text-anchor="middle" class="scope-node-label" fill="#777"
+                  font-size="7.5">NON</text>
+                <use href="#scopeShip" x="126" y="32" width="68" height="42" style="color:var(--eea-non)" />
+                <text x="38" y="90" text-anchor="middle" class="scope-caption" fill="var(--text-muted)">EEA Port</text>
+                <text x="282" y="90" text-anchor="middle" class="scope-caption" fill="var(--text-muted)">Non‑EEA
+                  Port</text>
+                <text x="160" y="20" text-anchor="middle" class="scope-caption" fill="var(--eea-non)"
+                  font-size="9.5">Outbound leg leaves EEA</text>
+              </svg>
+              <p class="scope-card-desc">Departs an EEA port and arrives outside the EEA. Because only one end of the
+                leg is in Union waters, EU rules count <strong>50% of the CO₂ &amp; fuel</strong> for this leg toward
+                MRV / FuelEU compliance — the "outside" portion is excluded.</p>
+            </div>
+
+            <!-- CASE 3: Non-EEA -> EEA -->
+            <div class="scope-card">
+              <div class="scope-card-head">
+                <span class="scope-card-title">③ Non‑EEA → EEA</span>
+                <span class="scope-pct"
+                  style="background:var(--non-eea-bg);color:var(--non-eea);border-color:#e0a090;">50% Scope</span>
+              </div>
+              <svg viewBox="0 0 320 114" class="scope-svg">
+                <line x1="58" y1="54" x2="262" y2="54" stroke="var(--non-eea)" stroke-width="3" />
+                <line x1="160" y1="46" x2="160" y2="62" stroke="var(--non-eea)" stroke-width="2"
+                  stroke-dasharray="3 3" />
+                <circle cx="38" cy="54" r="17" fill="#f0f0f0" stroke="#bbb" stroke-width="2" />
+                <text x="38" y="57" text-anchor="middle" class="scope-node-label" fill="#777" font-size="7.5">NON</text>
+                <circle cx="282" cy="54" r="17" fill="var(--eea-eea-bg)" stroke="var(--eea-eea)" stroke-width="2" />
+                <text x="282" y="58" text-anchor="middle" class="scope-node-label" fill="var(--eea-eea)">EEA</text>
+                <use href="#scopeShip" x="126" y="32" width="68" height="42" style="color:var(--non-eea)" />
+                <text x="38" y="90" text-anchor="middle" class="scope-caption" fill="var(--text-muted)">Non‑EEA
+                  Port</text>
+                <text x="282" y="90" text-anchor="middle" class="scope-caption" fill="var(--text-muted)">EEA Port</text>
+                <text x="160" y="20" text-anchor="middle" class="scope-caption" fill="var(--non-eea)"
+                  font-size="9.5">Inbound leg enters EEA</text>
+              </svg>
+              <p class="scope-card-desc">Departs a non‑EEA port and arrives at an EEA port — the mirror image of Case ②.
+                Again <strong>50% of the leg's CO₂ &amp; fuel</strong> counts toward EU obligations, reflecting the
+                portion of the voyage that is inbound to the Union.</p>
+            </div>
+
+            <!-- CASE 4: EEA Port Call (in-port) -->
+            <div class="scope-card">
+              <div class="scope-card-head">
+                <span class="scope-card-title">④ EEA Port Call (In‑Port)</span>
+                <span class="scope-pct"
+                  style="background:var(--eea-port-bg);color:var(--eea-port);border-color:#a0bce0;">100% In‑Port</span>
+              </div>
+              <svg viewBox="0 0 320 114" class="scope-svg">
+                <circle cx="160" cy="54" r="36" fill="var(--eea-port-bg)" stroke="var(--eea-port)" stroke-width="2"
+                  stroke-dasharray="4 3" />
+                <use href="#scopeShip" x="126" y="36" width="68" height="42" style="color:var(--eea-port)" />
+                <rect x="118" y="76" width="84" height="5" rx="1" fill="var(--eea-port)" opacity="0.55" />
+                <rect x="124" y="81" width="4" height="8" fill="var(--eea-port)" opacity="0.55" />
+                <rect x="158" y="81" width="4" height="8" fill="var(--eea-port)" opacity="0.55" />
+                <rect x="192" y="81" width="4" height="8" fill="var(--eea-port)" opacity="0.55" />
+                <text x="160" y="20" text-anchor="middle" class="scope-caption" fill="var(--eea-port)"
+                  font-size="9.5">Vessel alongside / at berth</text>
+                <text x="160" y="108" text-anchor="middle" class="scope-caption" fill="var(--text-muted)">EEA Port —
+                  quay &amp; bollards shown</text>
+              </svg>
+              <p class="scope-card-desc">Whenever a vessel is within an EEA port — berthed, maneuvering or at anchorage
+                — that time is captured at <strong>100% scope</strong> under both regulations, regardless of how the
+                connecting sea passage on either side is classified.</p>
+            </div>
+
+            <!-- CASE 5: OMR Voyage -->
+            <div class="scope-card">
+              <div class="scope-card-head">
+                <span class="scope-card-title">⑤ OMR Voyage</span>
+                <span class="scope-pct" style="background:var(--omr-bg);color:var(--omr);border-color:#c4a8e0;">Tracked
+                  Separately</span>
+              </div>
+              <svg viewBox="0 0 320 114" class="scope-svg">
+                <line x1="58" y1="54" x2="262" y2="54" stroke="var(--omr)" stroke-width="3" stroke-dasharray="6 4" />
+                <circle cx="38" cy="54" r="17" fill="var(--omr-bg)" stroke="var(--omr)" stroke-width="2" />
+                <text x="38" y="57" text-anchor="middle" class="scope-node-label" fill="var(--omr)"
+                  font-size="7.5">OMR</text>
+                <circle cx="282" cy="54" r="17" fill="var(--eea-eea-bg)" stroke="var(--eea-eea)" stroke-width="2" />
+                <text x="282" y="58" text-anchor="middle" class="scope-node-label" fill="var(--eea-eea)">EEA</text>
+                <use href="#scopeShip" x="126" y="32" width="68" height="42" style="color:var(--omr)" />
+                <text x="38" y="90" text-anchor="middle" class="scope-caption" fill="var(--text-muted)">Outermost
+                  Region</text>
+                <text x="282" y="90" text-anchor="middle" class="scope-caption" fill="var(--text-muted)">EEA / Mainland
+                  Port</text>
+                <text x="160" y="20" text-anchor="middle" class="scope-caption" fill="var(--omr)" font-size="9.5">Canary
+                  Is. · Azores · Madeira · French OMR</text>
+              </svg>
+              <p class="scope-card-desc">Either port is an Outermost Region (e.g. Canary Islands, Azores, Madeira,
+                French overseas departments). These routes carry their own transitional/derogated treatment under EU
+                rules, so the tool flags them as <strong>OMR</strong> and reports them separately rather than folding
+                them into the standard 100% / 50% buckets.</p>
+            </div>
+
+            <!-- CASE 6: Out of Scope -->
+            <div class="scope-card">
+              <div class="scope-card-head">
+                <span class="scope-card-title">⑥ Out of Scope</span>
+                <span class="scope-pct" style="background:#f0f0f0;color:#666;border-color:#ddd;">0% Excluded</span>
+              </div>
+              <svg viewBox="0 0 320 114" class="scope-svg">
+                <line x1="58" y1="54" x2="262" y2="54" stroke="#aaaaaa" stroke-width="3" stroke-dasharray="5 5" />
+                <circle cx="38" cy="54" r="17" fill="#f0f0f0" stroke="#bbb" stroke-width="2" />
+                <text x="38" y="57" text-anchor="middle" class="scope-node-label" fill="#777" font-size="7.5">NON</text>
+                <circle cx="282" cy="54" r="17" fill="#f0f0f0" stroke="#bbb" stroke-width="2" />
+                <text x="282" y="57" text-anchor="middle" class="scope-node-label" fill="#777"
+                  font-size="7.5">NON</text>
+                <use href="#scopeShip" x="126" y="32" width="68" height="42" style="color:#999" />
+                <text x="38" y="90" text-anchor="middle" class="scope-caption" fill="var(--text-muted)">Non‑EEA
+                  Port</text>
+                <text x="282" y="90" text-anchor="middle" class="scope-caption" fill="var(--text-muted)">Non‑EEA
+                  Port</text>
+                <text x="160" y="20" text-anchor="middle" class="scope-caption" fill="#888" font-size="9.5">Both ends
+                  outside the EEA</text>
+              </svg>
+              <p class="scope-card-desc">Departure and arrival are both outside the EEA (and neither is an OMR port).
+                The leg has <strong>no MRV / FuelEU obligation at all</strong> and is excluded entirely from CO₂ and
+                compliance totals — it still appears in the results table for completeness, tagged "Out of Scope".</p>
+            </div>
+
+          </div>
+
+          <div class="help-footnote" style="margin-top:14px;">The <strong>MRV</strong> and <strong>FuelEU</strong>
+            classification for a leg can diverge — e.g. a port might be treated as in-scope under one regulation but not
+            the other. Where that happens, the Results tab flags the row with the ⚠ MRV ≠ FuelEU filter so it can be
+            reviewed manually.</div>
+        </div>
+
+        <div class="help-section">
+          <div class="help-section-title">Excel Upload — Column Reference</div>
+          <table class="help-col-table">
+            <thead>
+              <tr>
+                <th>Column</th>
+                <th>Field</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>A</td>
+                <td>Voyage_No</td>
+                <td>Unique voyage identifier</td>
+              </tr>
+              <tr>
+                <td>B / C</td>
+                <td>Departure Port / Code</td>
+                <td>Port name (optional) + UN/LOCODE</td>
+              </tr>
+              <tr>
+                <td>D</td>
+                <td>Departure_Date</td>
+                <td>YYYY-MM-DD</td>
+              </tr>
+              <tr>
+                <td>E / F</td>
+                <td>Arrival Port / Code</td>
+                <td>Port name (optional) + UN/LOCODE</td>
+              </tr>
+              <tr>
+                <td>G</td>
+                <td>Arrival_Date</td>
+                <td>YYYY-MM-DD</td>
+              </tr>
+              <tr>
+                <td>H</td>
+                <td>Activity</td>
+                <td>SEA PASSAGE or PORT</td>
+              </tr>
+              <tr>
+                <td>I</td>
+                <td>Distance (nm)</td>
+                <td>Total voyage distance</td>
+              </tr>
+              <tr>
+                <td>J+</td>
+                <td>Fuel Type Columns</td>
+                <td>Consumption in metric tonnes — fill only fuels used</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="help-section">
+          <div class="help-section-title">Port Registry &amp; Exports</div>
+          <p class="help-lede" style="font-size:12px;">The <strong>Port Registry</strong> stores each port's EEA /
+            non‑EEA / OMR category and is the source of truth for classification — edit or add ports there if a code
+            isn't recognised. From the Results tab you can export a <strong>Part B Import</strong> file, an <strong>OMR
+              Voyages</strong> file, or use the <strong>🔄 Refresh Tables</strong> button to recalculate after changing
+            input data or the port registry.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
 
   <main class="main">
 
@@ -2149,6 +3071,31 @@
     <span class="footer-sub">EU MRV &amp; FuelEU Maritime — Voyage Classification Tool</span>
   </footer>
 
+  <!-- ══ GOOGLE DRIVE SAVE POPUP ══ -->
+  <div id="gdrivePopupOverlay">
+    <div id="gdrivePopupBox">
+      <div class="gd-head">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8.05 2 1 14l3.55 6 7.05-12L8.05 2Z" fill="#0F9D58" />
+          <path d="M15.95 2 23 14l-3.55 6-7.05-12L15.95 2Z" fill="#FFCF48" transform="translate(-8 0)" />
+          <path d="M8 20h9.9L21.45 14H4.55L8 20Z" fill="#4285F4" />
+        </svg>
+        <h3>Category Updated</h3>
+      </div>
+      <div class="gd-body">
+        <span id="gdrivePopupPortLabel">Your MRV / FuelEU category change is applied for this session only.</span> It
+        has <strong>not</strong> been saved in the app itself — save a backup to Google Drive now to keep it, otherwise
+        it will be lost on reload.
+        <div class="gd-detail">This downloads a Port_Classification_Registry.xml file and opens Google Drive in a new
+          tab, where you can drop it in. Next time, use ⬆ Import XML to load it back in.</div>
+      </div>
+      <div class="gd-foot">
+        <button class="gd-btn-skip" onclick="closeGDrivePopup()">Not Now</button>
+        <button class="gd-btn-save" onclick="saveRegistryToGoogleDrive()">📤 Save to Google Drive</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ══ FUEL POPUP MODAL ══ -->
   <div id="fuelPopupOverlay">
     <div id="fuelPopupBox">
@@ -2179,298 +3126,350 @@
     //     Canary Islands (Spain/ES) or Azores & Madeira (Portugal/PT) are modeled.
     // Editing this list from the Regulation Guide tab is what drives voyage classification.
 
-    const REGISTRY_STORAGE_KEY = 'eu_mrv_port_registry_v2';
-    const LEGACY_REGISTRY_STORAGE_KEYS = ['eu_mrv_port_registry_v1'];
+    const REGISTRY_STORAGE_KEY = 'eu_mrv_port_registry_v4';
+    const LEGACY_REGISTRY_STORAGE_KEYS = ['eu_mrv_port_registry_v3', 'eu_mrv_port_registry_v2', 'eu_mrv_port_registry_v1'];
 
     const DEFAULT_PORT_REGISTRY = [
-      // ---- EEA — EU member states + Iceland, Liechtenstein, Norway (UN/LOCODE port-level entries) ----
+      // ---- Full Port Classification Registry — loaded exactly from the authoritative
+      //      Port_Classification_Registry.xlsx (338 entries: EEA / Non-EEA / OMR) ----
+      { code: 'AE', name: 'United Arab Emirates', mrv_category: 'EEA', fueleu_category: 'NONEEA' },
       { code: 'AT', name: 'Austria', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'BE', name: 'Belgium', mrv_category: 'EEA', fueleu_category: 'EEA' },
       { code: 'BEANR', name: 'Antwerp', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'BEZEE', name: 'Zeebrugge', mrv_category: 'EEA', fueleu_category: 'EEA' },
       { code: 'BEGNE', name: 'Ghent', mrv_category: 'EEA', fueleu_category: 'EEA' },
       { code: 'BEOST', name: 'Ostend', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'BEZEE', name: 'Zeebrugge', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'BG', name: 'Bulgaria', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'BGBOJ', name: 'Bulgaria (auto-detected from voyage data)', mrv_category: 'EEA', fueleu_category: 'EEA' },
       { code: 'BGVAR', name: 'Varna', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'BGBOJ', name: 'Burgas', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'HRRJK', name: 'Rijeka', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'HRSPU', name: 'Split', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'HRPLE', name: 'Pula', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'HRZAD', name: 'Zadar', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'HRDBV', name: 'Dubrovnik', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'CY', name: 'Cyprus', mrv_category: 'EEA', fueleu_category: 'EEA' },
       { code: 'CYLMS', name: 'Limassol', mrv_category: 'EEA', fueleu_category: 'EEA' },
       { code: 'CYLRN', name: 'Larnaca', mrv_category: 'EEA', fueleu_category: 'EEA' },
       { code: 'CZ', name: 'Czechia', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'DKCPH', name: 'Copenhagen', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'DKAAR', name: 'Aarhus', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'DKESB', name: 'Esbjerg', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'DKFRC', name: 'Fredericia', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'DKAAL', name: 'Aalborg', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'EETLL', name: 'Tallinn', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'EEMUG', name: 'Muuga', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'EEPAR', name: 'Paldiski', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'FIHEL', name: 'Helsinki', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'FIKOT', name: 'Kotka', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'FIHAM', name: 'Hamina', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'FITKU', name: 'Turku', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'FIRAU', name: 'Rauma', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'FIPOR', name: 'Pori', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'FIKOK', name: 'Kokkola', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'FRLEH', name: 'Le Havre', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'FRMRS', name: 'Marseille / Fos-sur-Mer', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'FRDKK', name: 'Dunkirk', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'FRBES', name: 'Brest', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'FRNTE', name: 'Nantes-Saint-Nazaire', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'FRBOD', name: 'Bordeaux', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'FRCQF', name: 'Calais', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'FRLRH', name: 'La Rochelle', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'FRROU', name: 'Rouen', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'FRTLN', name: 'Toulon', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'DEHAM', name: 'Hamburg', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'DEBRV', name: 'Bremerhaven', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'DE', name: 'Germany', mrv_category: 'EEA', fueleu_category: 'EEA' },
       { code: 'DEBRE', name: 'Bremen', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'DEWVN', name: 'Wilhelmshaven', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'DEROS', name: 'Rostock', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'DEBRV', name: 'Bremerhaven', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'DEEME', name: 'Emden', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'DEHAM', name: 'Hamburg', mrv_category: 'EEA', fueleu_category: 'EEA' },
       { code: 'DEKEL', name: 'Kiel', mrv_category: 'EEA', fueleu_category: 'EEA' },
       { code: 'DELBC', name: 'Lübeck', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'DEEME', name: 'Emden', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'GRPIR', name: 'Piraeus', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'GRTHE', name: 'Thessaloniki', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'GRPAT', name: 'Patras', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'GRHER', name: 'Heraklion', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'GRVOL', name: 'Volos', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'GRELE', name: 'Eleusis', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'GRAGQ', name: 'Aghioi Theodoroi', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'HU', name: 'Hungary', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ISREY', name: 'Reykjavik', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ISGRI', name: 'Grindavik', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ISAKR', name: 'Akureyri', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'IEDUB', name: 'Dublin', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'IECOR', name: 'Cork', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'IEORK', name: 'Cork (Ringaskiddy)', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'IEWAT', name: 'Waterford', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'IESHA', name: 'Shannon Foynes', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'IERSK', name: 'Rosslare', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ITGOA', name: 'Genoa', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ITTRS', name: 'Trieste', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ITLSP', name: 'La Spezia', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ITLIV', name: 'Livorno', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ITNAP', name: 'Naples', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ITSAL', name: 'Salerno', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ITGIT', name: 'Gioia Tauro', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ITVCE', name: 'Venice', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ITRAV', name: 'Ravenna', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ITCVV', name: 'Civitavecchia', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ITAOI', name: 'Ancona', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ITBRI', name: 'Bari', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ITTAR', name: 'Taranto', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ITPMO', name: 'Palermo', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ITCAG', name: 'Cagliari', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ITAUG', name: 'Augusta', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'LVRIX', name: 'Riga', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'LVVNT', name: 'Ventspils', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'LVLPX', name: 'Liepaja', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'LI', name: 'Liechtenstein', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'LTKLJ', name: 'Klaipeda', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'LU', name: 'Luxembourg', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'MTMLA', name: 'Valletta / Marsaxlokk', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'MTMAR', name: 'Marsaxlokk (Freeport)', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'NLRTM', name: 'Rotterdam', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'NLAMS', name: 'Amsterdam', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'NLVLI', name: 'Vlissingen', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'NLTNZ', name: 'Terneuzen', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'NLMST', name: 'Moerdijk', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'NLDOR', name: 'Dordrecht', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'NLGRQ', name: 'Groningen (Eemshaven)', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'NOOSL', name: 'Oslo', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'NOBGO', name: 'Bergen', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'NOSVG', name: 'Stavanger', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'NOTRD', name: 'Trondheim', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'NOKRS', name: 'Kristiansand', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'NONNN', name: 'Narvik', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'NOTOS', name: 'Tromsø', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'PLGDN', name: 'Gdansk', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'PLGDY', name: 'Gdynia', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'PLSZZ', name: 'Szczecin', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'PLSWI', name: 'Świnoujście', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'PTLIS', name: 'Lisbon', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'PTLEI', name: 'Leixões (Porto)', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'PTSTB', name: 'Setúbal', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'PTSIE', name: 'Sines', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'PTFAO', name: 'Faro', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'PTAVE', name: 'Aveiro', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ROCND', name: 'Constanta', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ROMID', name: 'Midia', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ROGAL', name: 'Galati', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'SK', name: 'Slovakia', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'SIKOP', name: 'Koper', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'DEROS', name: 'Rostock', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'DERSK', name: 'Germany (auto-detected from voyage data)', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'DEWVN', name: 'Wilhelmshaven', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'DK', name: 'Denmark', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'DKAAL', name: 'Aalborg', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'DKAAR', name: 'Aarhus', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'DKCPH', name: 'Copenhagen', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'DKESB', name: 'Esbjerg', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'DKFRC', name: 'Fredericia', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'EE', name: 'Estonia', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'EEMUG', name: 'Muuga', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'EEPAR', name: 'Paldiski', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'EETLL', name: 'Tallinn', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ES', name: 'Spain (mainland)', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ESACO', name: 'A Coruña', mrv_category: 'EEA', fueleu_category: 'EEA' },
       { code: 'ESALG', name: 'Algeciras', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ESVLC', name: 'Valencia', mrv_category: 'EEA', fueleu_category: 'EEA' },
       { code: 'ESBCN', name: 'Barcelona', mrv_category: 'EEA', fueleu_category: 'EEA' },
       { code: 'ESBIO', name: 'Bilbao', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ESCAR', name: 'Cartagena', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ESHUV', name: 'Huelva', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ESCAR', name: 'Spain (mainland) (auto-detected from voyage data)', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ESCAS', name: 'Spain (mainland) (auto-detected from voyage data)', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ESCEU', name: 'Ceuta', mrv_category: 'EEA', fueleu_category: 'EEA' },
       { code: 'ESGIJ', name: 'Gijón', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ESHUV', name: 'Huelva', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ESMLN', name: 'Melilla', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ESMPG', name: 'Málaga', mrv_category: 'EEA', fueleu_category: 'EEA' },
       { code: 'ESSCT', name: 'Santander', mrv_category: 'EEA', fueleu_category: 'EEA' },
       { code: 'ESTAR', name: 'Tarragona', mrv_category: 'EEA', fueleu_category: 'EEA' },
       { code: 'ESVGO', name: 'Vigo', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ESACO', name: 'A Coruña', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ESMPG', name: 'Málaga', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ESCEU', name: 'Ceuta', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'ESMLN', name: 'Melilla', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'SEGOT', name: 'Gothenburg', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'SESTO', name: 'Stockholm', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'SEMMA', name: 'Malmö', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'SEHEL', name: 'Helsingborg', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ESVLC', name: 'Valencia', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'FI', name: 'Finland', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'FIHAM', name: 'Hamina', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'FIHEL', name: 'Helsinki', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'FIKOK', name: 'Kokkola', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'FIKOT', name: 'Kotka', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'FIPOR', name: 'Finland (auto-detected from voyage data)', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'FIRAU', name: 'Rauma', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'FITKU', name: 'Turku', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'FITOR', name: 'Finland (auto-detected from voyage data)', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'FR', name: 'France (mainland)', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'FRBES', name: 'Brest', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'FRBOD', name: 'Bordeaux', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'FRCQF', name: 'Calais', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'FRDKK', name: 'Dunkirk', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'FRLEH', name: 'Le Havre', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'FRLRH', name: 'La Rochelle', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'FRMRS', name: 'Marseille / Fos-sur-Mer', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'FRNTE', name: 'Nantes-Saint-Nazaire', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'FRROU', name: 'Rouen', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'FRTLN', name: 'Toulon', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'FRURO', name: 'France (mainland) (auto-detected from voyage data)', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'GR', name: 'Greece', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'GRAGQ', name: 'Aghioi Theodoroi', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'GRASS', name: 'Greece (auto-detected from voyage data)', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'GRELE', name: 'Eleusis', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'GRHER', name: 'Heraklion', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'GRPAT', name: 'Patras', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'GRPER', name: 'Greece (auto-detected from voyage data)', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'GRPIR', name: 'Piraeus', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'GRSKG', name: 'Greece (auto-detected from voyage data)', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'GRTHE', name: 'Thessaloniki', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'GRVOL', name: 'Volos', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'GRYLI', name: 'Greece (auto-detected from voyage data)', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'HR', name: 'Croatia', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'HRDBV', name: 'Dubrovnik', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'HRPLE', name: 'Pula', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'HRRJK', name: 'Rijeka', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'HRSPU', name: 'Split', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'HRZAD', name: 'Zadar', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'HU', name: 'Hungary', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'IE', name: 'Ireland', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'IECOR', name: 'Cork', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'IEDUB', name: 'Dublin', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'IEORK', name: 'Cork (Ringaskiddy)', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'IERSK', name: 'Rosslare', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'IESHA', name: 'Shannon Foynes', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'IEWAT', name: 'Waterford', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'IND', name: 'INDIA', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'IS', name: 'Iceland', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ISAKR', name: 'Akureyri', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ISGRI', name: 'Grindavik', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ISREY', name: 'Reykjavik', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'IT', name: 'Italy', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ITAOI', name: 'Ancona', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ITAUG', name: 'Augusta', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ITBRI', name: 'Bari', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ITCAG', name: 'Cagliari', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ITCVV', name: 'Civitavecchia', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ITGIT', name: 'Gioia Tauro', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ITGOA', name: 'Genoa', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ITLIV', name: 'Livorno', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ITLSP', name: 'La Spezia', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ITMLZ', name: 'Italy (auto-detected from voyage data)', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ITNAP', name: 'Naples', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ITPFX', name: 'Italy (auto-detected from voyage data)', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ITPMO', name: 'Palermo', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ITRAV', name: 'Ravenna', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ITSAL', name: 'Salerno', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ITTAR', name: 'Taranto', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ITTRS', name: 'Trieste', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ITVCE', name: 'Venice', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'LI', name: 'Liechtenstein', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'LT', name: 'Lithuania', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'LTKLJ', name: 'Klaipeda', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'LU', name: 'Luxembourg', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'LV', name: 'Latvia', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'LVLPX', name: 'Liepaja', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'LVRIX', name: 'Riga', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'LVVNT', name: 'Ventspils', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'MT', name: 'Malta', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'MTMAR', name: 'Malta (auto-detected from voyage data)', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'MTMLA', name: 'Valletta / Marsaxlokk', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'NL', name: 'Netherlands', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'NLAMS', name: 'Amsterdam', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'NLDOR', name: 'Dordrecht', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'NLGRQ', name: 'Groningen (Eemshaven)', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'NLMST', name: 'Moerdijk', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'NLRTM', name: 'Rotterdam', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'NLTNZ', name: 'Terneuzen', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'NLVLI', name: 'Vlissingen', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'NO', name: 'Norway', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'NOBGO', name: 'Bergen', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'NOKRS', name: 'Kristiansand', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'NONNN', name: 'Narvik', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'NOOSL', name: 'Oslo', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'NOSVG', name: 'Stavanger', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'NOTOS', name: 'Tromsø', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'NOTRD', name: 'Trondheim', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'PL', name: 'Poland', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'PLGDN', name: 'Gdansk', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'PLGDY', name: 'Gdynia', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'PLSWI', name: 'Świnoujście', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'PLSZZ', name: 'Szczecin', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'PT', name: 'Portugal (mainland)', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'PTAVE', name: 'Aveiro', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'PTFAO', name: 'Faro', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'PTLEI', name: 'Leixões (Porto)', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'PTLIS', name: 'Lisbon', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'PTSIE', name: 'Sines', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'PTSTB', name: 'Setúbal', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'RO', name: 'Romania', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ROCND', name: 'Romania (auto-detected from voyage data)', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ROGAL', name: 'Galati', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'ROMID', name: 'Midia', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'SE', name: 'Sweden', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'SEBRO', name: 'Sweden (auto-detected from voyage data)', mrv_category: 'EEA', fueleu_category: 'EEA' },
       { code: 'SEGAV', name: 'Gävle', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      { code: 'SETRE', name: 'Trelleborg', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'SEGOT', name: 'Gothenburg', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'SEHAD', name: 'Sweden (auto-detected from voyage data)', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'SEHEL', name: 'Helsingborg', mrv_category: 'EEA', fueleu_category: 'EEA' },
       { code: 'SEKAL', name: 'Karlshamn', mrv_category: 'EEA', fueleu_category: 'EEA' },
-      // ---- Non-EEA — major non-EEA trading-partner ports (for clarity / quick reference) ----
-      { code: 'GBFXT', name: 'Felixstowe', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'GBSOU', name: 'Southampton', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'GBLGP', name: 'London Gateway', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'GBTIL', name: 'Tilbury (London)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'GBLIV', name: 'Liverpool', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'GBIMM', name: 'Immingham', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'GBGRK', name: 'Grangemouth', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'GBBEL', name: 'Belfast', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'GBMNC', name: 'Manchester', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'GBHUL', name: 'Hull', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'GBTEE', name: 'Teesport', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'GBDVR', name: 'Dover', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'GBNHM', name: 'Newhaven', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'GBPME', name: 'Portsmouth', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'GBLON', name: 'London (general)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'CH', name: 'Switzerland', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'USNYC', name: 'New York / New Jersey', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'USLAX', name: 'Los Angeles', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'USLGB', name: 'Long Beach', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'USSAV', name: 'Savannah', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'USHOU', name: 'Houston', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'USORF', name: 'Norfolk', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'USCHS', name: 'Charleston', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'USMIA', name: 'Miami', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'USOAK', name: 'Oakland', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'USSEA', name: 'Seattle', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'USTIW', name: 'Tacoma', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'USBAL', name: 'Baltimore', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'USILM', name: 'Wilmington (NC)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'USNOL', name: 'New Orleans', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'USJAX', name: 'Jacksonville', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'CNSHA', name: 'Shanghai', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'CNSZX', name: 'Shenzhen', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'CNNGB', name: 'Ningbo-Zhoushan', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'CNGZG', name: 'Guangzhou', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'CNQIN', name: 'Qingdao', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'CNTAO', name: 'Tianjin', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'CNDLC', name: 'Dalian', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'CNXMN', name: 'Xiamen', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'CNYTN', name: 'Yantian', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'CNHKG', name: 'Hong Kong', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'SGSIN', name: 'Singapore', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'MYPKG', name: 'Port Klang (Malaysia)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'MYTPP', name: 'Tanjung Pelepas (Malaysia)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'THBKK', name: 'Bangkok / Laem Chabang (Thailand)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'VNSGN', name: 'Ho Chi Minh City (Vietnam)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'IDJKT', name: 'Jakarta (Indonesia)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'PHMNL', name: 'Manila (Philippines)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'JPYOK', name: 'Yokohama', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'JPTYO', name: 'Tokyo', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'JPNGO', name: 'Nagoya', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'JPUKB', name: 'Kobe', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'JPOSA', name: 'Osaka', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'KRPUS', name: 'Busan (South Korea)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'KRINC', name: 'Incheon (South Korea)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'INNSA', name: 'Nhava Sheva (Mumbai)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'INMUN', name: 'Mundra', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'INMAA', name: 'Chennai', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'INVTZ', name: 'Visakhapatnam', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'INCCU', name: 'Kolkata', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'INCOK', name: 'Cochin', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'AEJEA', name: 'Jebel Ali (UAE)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'SEMMA', name: 'Malmö', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'SEROR', name: 'Sweden (auto-detected from voyage data)', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'SESOO', name: 'Sweden (auto-detected from voyage data)', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'SESTO', name: 'Stockholm', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'SETRE', name: 'Trelleborg', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'SI', name: 'Slovenia', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'SIKOP', name: 'Koper', mrv_category: 'EEA', fueleu_category: 'EEA' },
+      { code: 'SK', name: 'Slovakia', mrv_category: 'EEA', fueleu_category: 'EEA' },
       { code: 'AEAUH', name: 'Abu Dhabi (UAE)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'AEJEA', name: 'Jebel Ali (UAE)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
       { code: 'AESHJ', name: 'Sharjah (UAE)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'SADMM', name: 'Dammam (Saudi Arabia)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'SAJED', name: 'Jeddah (Saudi Arabia)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'QADOH', name: 'Doha / Hamad Port (Qatar)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'KWKWI', name: 'Kuwait', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'OMSLL', name: 'Salalah (Oman)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'ILHFA', name: 'Haifa (Israel)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'ILASH', name: 'Ashdod (Israel)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'TRIST', name: 'Istanbul / Ambarli', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'TRMER', name: 'Mersin', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'TRIZM', name: 'Izmir', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'TRGEM', name: 'Gemlik', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'MAPTM', name: 'Tanger Med (Morocco)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'MACAS', name: 'Casablanca (Morocco)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'EGPSD', name: 'Port Said (Egypt)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'EGALY', name: 'Alexandria (Egypt)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'EGSUZ', name: 'Suez (Egypt)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'DZALG', name: 'Algiers (Algeria)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'TNTUN', name: 'Tunis / Rades (Tunisia)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'LYTIP', name: 'Tripoli (Libya)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'PABLB', name: 'Balboa (Panama)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'PACTB', name: 'Colón (Panama)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'BRSSZ', name: 'Santos (Brazil)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
       { code: 'ARBUE', name: 'Buenos Aires (Argentina)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'ZADUR', name: 'Durban (South Africa)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'ZACPT', name: 'Cape Town (South Africa)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'AUSYD', name: 'Sydney (Australia)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
       { code: 'AUMEL', name: 'Melbourne (Australia)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'NZAKL', name: 'Auckland (New Zealand)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'CAVAN', name: 'Vancouver (Canada)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'CAHAL', name: 'Halifax (Canada)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'RUVVO', name: 'Vladivostok (Russia)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'RULED', name: 'St. Petersburg (Russia)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      // ---- OMR: EU Outermost Regions (Article 349 TFEU) — specific port-level overrides ----
-      { code: 'GP', name: 'Guadeloupe (FR) — OMR country code', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'GF', name: 'French Guiana (FR) — OMR country code', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'MQ', name: 'Martinique (FR) — OMR country code', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'RE', name: 'Réunion (FR) — OMR country code', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'YT', name: 'Mayotte (FR) — OMR country code', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'MF', name: 'Saint-Martin (FR) — OMR country code', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'GPPTP', name: 'Pointe-à-Pitre — Guadeloupe (FR)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'GFCAY', name: 'Cayenne — French Guiana (FR)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'MQFDF', name: 'Fort-de-France — Martinique (FR)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'REPDG', name: 'Port-des-Galets / Le Port — Réunion (FR)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'YTDZA', name: 'Dzaoudzi — Mayotte (FR)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'MFMSB', name: 'Marigot — Saint-Martin (FR)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'PTPDL', name: 'Ponta Delgada — Azores (PT)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'PTTER', name: 'Terceira — Azores (PT)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'PTHOR', name: 'Horta — Azores (PT)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'PTFAI', name: 'Faial — Azores (PT)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'PTGNR', name: 'Graciosa — Azores (PT)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'PTPIM', name: 'Pico — Azores (PT)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'PTCAI', name: 'Caís — Azores (PT)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'PTFNC', name: 'Funchal — Madeira (PT)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'PTPMO', name: 'Porto Moniz — Madeira (PT)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'PTPRD', name: 'Porto Santo — Madeira (PT)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'ESLPA', name: 'Las Palmas — Canary Islands (ES)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'ESTCI', name: 'Tenerife (Santa Cruz) — Canary Islands (ES)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'ESFUE', name: 'Fuerteventura — Canary Islands (ES)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'ESACE', name: 'Arrecife — Canary Islands (ES)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'ESGDE', name: 'Gran Canaria (Las Palmas area) — Canary Islands (ES)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'ESPMH', name: 'Puerto del Rosario — Canary Islands (ES)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'ESSCO', name: 'San Sebastián de la Gomera — Canary Islands (ES)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'ESARR', name: 'Arrecife (Lanzarote) — Canary Islands (ES)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'ESMAS', name: 'Mas Palomas — Canary Islands (ES)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'ESLGR', name: 'La Gomera — Canary Islands (ES)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-      { code: 'ESVDE', name: 'Valverde (El Hierro) — Canary Islands (ES)', mrv_category: 'OMR', fueleu_category: 'OMR' },
-
-      // ---- Non-EEA — auto-detected from voyage data, pending manual classification (from registry export) ----
+      { code: 'AUSYD', name: 'Sydney (Australia)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
       { code: 'BRACX', name: 'Auto-detected — please classify', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
       { code: 'BRCDO', name: 'Auto-detected — please classify', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'DERSK', name: 'Auto-detected — please classify', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'BRSSZ', name: 'Santos (Brazil)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'CAHAL', name: 'Halifax (Canada)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'CAVAN', name: 'Vancouver (Canada)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'CH', name: 'Switzerland', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'CMKBI', name: 'Auto-detected — please classify', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'CN', name: 'China', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'CNDLC', name: 'Dalian', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'CNGZG', name: 'Guangzhou', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'CNHKG', name: 'Hong Kong', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'CNNGB', name: 'Ningbo-Zhoushan', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'CNQIN', name: 'Qingdao', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'CNSHA', name: 'Shanghai', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'CNSZX', name: 'Shenzhen', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'CNTAO', name: 'Tianjin', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'CNXMN', name: 'Xiamen', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'CNYTN', name: 'Yantian', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'DZALG', name: 'Algiers (Algeria)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'DZAZW', name: 'Auto-detected — please classify', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
       { code: 'DZBJA', name: 'Auto-detected — please classify', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'FITOR', name: 'Auto-detected — please classify', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'FRURO', name: 'Auto-detected — please classify', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'GRSKG', name: 'Auto-detected — please classify', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'GRYLI', name: 'Auto-detected — please classify', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'MASFI', name: 'Auto-detected — please classify', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'EG', name: 'Egypt', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'EGALY', name: 'Egypt (auto-detected from voyage data)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'EGPSD', name: 'Egypt (auto-detected from voyage data)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'EGSUZ', name: 'Suez (Egypt)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'GB', name: 'United Kingdom (non-EEA since Brexit, 2020)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'GBBEL', name: 'Belfast', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'GBDVR', name: 'Dover', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'GBFXT', name: 'Felixstowe', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'GBGRK', name: 'Grangemouth', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'GBHUL', name: 'Hull', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'GBIMM', name: 'Immingham', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'GBLGP', name: 'London Gateway', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'GBLIV', name: 'Liverpool', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'GBLON', name: 'London (general)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'GBMNC', name: 'Manchester', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'GBNHM', name: 'Newhaven', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'GBPEM', name: 'United Kingdom (non-EEA since Brexit, 2020) (auto-detected from voyage data)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'GBPME', name: 'Portsmouth', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'GBSOU', name: 'Southampton', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'GBTEE', name: 'Teesport', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'GBTIL', name: 'Tilbury (London)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'GIGIB', name: 'Auto-detected — please classify', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'GYGEO', name: 'Auto-detected — please classify', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'IDJKT', name: 'Jakarta (Indonesia)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'ILASH', name: 'Ashdod (Israel)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'ILHFA', name: 'Haifa (Israel)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'INCCU', name: 'Kolkata', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'INCOK', name: 'Cochin', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'INMAA', name: 'Chennai', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'INMUN', name: 'Mundra', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'INNSA', name: 'Nhava Sheva (Mumbai)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'INVTZ', name: 'Visakhapatnam', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'JPNGO', name: 'Nagoya', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'JPOSA', name: 'Osaka', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'JPTYO', name: 'Tokyo', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'JPUKB', name: 'Kobe', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'JPYOK', name: 'Yokohama', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'KRINC', name: 'Incheon (South Korea)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'KRPUS', name: 'Busan (South Korea)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'KWKWI', name: 'Kuwait', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'LBBEY', name: 'Auto-detected — please classify', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'LBCHK', name: 'Auto-detected — please classify', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'LYTIP', name: 'Tripoli (Libya)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'MA', name: 'Morocco', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'MACAS', name: 'Casablanca (Morocco)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'MAPTM', name: 'Tanger Med (Morocco)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'MASFI', name: 'Morocco (auto-detected from voyage data)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'MXDBT', name: 'Auto-detected — please classify', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'MYPKG', name: 'Port Klang (Malaysia)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'MYTPP', name: 'Tanjung Pelepas (Malaysia)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'NEW01', name: 'New port / country', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'NEW02', name: 'New port / country', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'NEW03', name: 'New port / country', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'NEW04', name: 'New port / country', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'NEW05', name: 'New port / country', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
       { code: 'NULL', name: 'Auto-detected — please classify', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'SEHAD', name: 'Auto-detected — please classify', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'SEROR', name: 'Auto-detected — please classify', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'SESOO', name: 'Auto-detected — please classify', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'NZAKL', name: 'Auckland (New Zealand)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'OMSLL', name: 'Salalah (Oman)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'PABLB', name: 'Balboa (Panama)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'PACTB', name: 'Colón (Panama)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'PHMNL', name: 'Manila (Philippines)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'QADOH', name: 'Doha / Hamad Port (Qatar)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'RULED', name: 'St. Petersburg (Russia)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'RUVVO', name: 'Vladivostok (Russia)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'SADMM', name: 'Dammam (Saudi Arabia)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'SAJED', name: 'Jeddah (Saudi Arabia)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'SG', name: 'Singapore', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'SGSIN', name: 'Singapore', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'THBKK', name: 'Bangkok / Laem Chabang (Thailand)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
       { code: 'TNGAE', name: 'Auto-detected — please classify', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
-      { code: 'TRISK', name: 'Auto-detected — please classify', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'TNTUN', name: 'Auto-detected — please classify', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'TR', name: 'Turkey', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'TRGEM', name: 'Gemlik', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'TRISK', name: 'Turkey (auto-detected from voyage data)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'TRIST', name: 'Istanbul / Ambarli', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'TRIZM', name: 'Izmir', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'TRMAR', name: 'Turkey (auto-detected from voyage data)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'TRMER', name: 'Mersin', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'US', name: 'United States', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'USBAL', name: 'Baltimore', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'USCHS', name: 'Charleston', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'USCRP', name: 'United States (auto-detected from voyage data)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'USHOU', name: 'Houston', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'USILM', name: 'Wilmington (NC)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'USJAX', name: 'Jacksonville', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'USLAX', name: 'Los Angeles', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'USLGB', name: 'Long Beach', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'USMIA', name: 'Miami', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'USNOL', name: 'New Orleans', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'USNYC', name: 'New York / New Jersey', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'USOAK', name: 'Oakland', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'USORF', name: 'Norfolk', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'USSAV', name: 'Savannah', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'USSEA', name: 'Seattle', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'USTIW', name: 'Tacoma', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'VNSGN', name: 'Ho Chi Minh City (Vietnam)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'ZACPT', name: 'Cape Town (South Africa)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'ZADUR', name: 'Durban (South Africa)', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'ZARCB', name: 'Auto-detected — please classify', mrv_category: 'NONEEA', fueleu_category: 'NONEEA' },
+      { code: 'ESACE', name: 'Arrecife — Canary Islands (ES)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'ESARR', name: 'Arrecife (Lanzarote) — Canary Islands (ES)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'ESFUE', name: 'Fuerteventura — Canary Islands (ES)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'ESGDE', name: 'Gran Canaria (Las Palmas area) — Canary Islands (ES)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'ESLGR', name: 'La Gomera — Canary Islands (ES)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'ESLPA', name: 'Las Palmas — Canary Islands (ES)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'ESMAS', name: 'Mas Palomas — Canary Islands (ES)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'ESPMH', name: 'Puerto del Rosario — Canary Islands (ES)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'ESSCO', name: 'San Sebastián de la Gomera — Canary Islands (ES)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'ESTCI', name: 'Tenerife (Santa Cruz) — Canary Islands (ES)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'ESVDE', name: 'Valverde (El Hierro) — Canary Islands (ES)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'GF', name: 'French Guiana (FR) — OMR country code', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'GFCAY', name: 'Cayenne — French Guiana (FR)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'GP', name: 'Guadeloupe (FR) — OMR country code', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'GPPTP', name: 'Pointe-à-Pitre — Guadeloupe (FR)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'MF', name: 'Saint-Martin (FR) — OMR country code', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'MFMSB', name: 'Marigot — Saint-Martin (FR)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'MQ', name: 'Martinique (FR) — OMR country code', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'MQFDF', name: 'Fort-de-France — Martinique (FR)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'PTCAI', name: 'Caís — Azores (PT)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'PTFAI', name: 'Faial — Azores (PT)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'PTFNC', name: 'Funchal — Madeira (PT)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'PTGNR', name: 'Graciosa — Azores (PT)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'PTHOR', name: 'Horta — Azores (PT)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'PTPDL', name: 'Ponta Delgada — Azores (PT)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'PTPIM', name: 'Pico — Azores (PT)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'PTPMO', name: 'Porto Moniz — Madeira (PT)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'PTPRD', name: 'Porto Santo — Madeira (PT)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'PTTER', name: 'Terceira — Azores (PT)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'RE', name: 'Réunion (FR) — OMR country code', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'REPDG', name: 'Port-des-Galets / Le Port — Réunion (FR)', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'YT', name: 'Mayotte (FR) — OMR country code', mrv_category: 'OMR', fueleu_category: 'OMR' },
+      { code: 'YTDZA', name: 'Dzaoudzi — Mayotte (FR)', mrv_category: 'OMR', fueleu_category: 'OMR' },
     ];
 
     // In-memory registry, keyed by code (UPPERCASE). Loaded from localStorage if present,
@@ -2524,10 +3523,15 @@
           if (!legacy || typeof legacy !== 'object') continue;
           Object.values(legacy).forEach(e => {
             migrateRegistryEntry(e);
-            // Only carry over entries the user actually customized themselves (custom/manual),
-            // or ports that don't exist in the new default list at all — never let an old
-            // 'default'-sourced row (from a smaller, outdated built-in list) shadow the new one.
-            if (e.source === 'custom' || e.source === 'manual' || e.source === 'auto' || !PORT_REGISTRY[e.code]) {
+            // Only carry over entries the user actually customized themselves by hand
+            // (custom/manual), or ports that don't exist in the new default list at all.
+            // Deliberately EXCLUDES 'auto' entries whose code the new default already
+            // covers: an 'auto' row is just the tool's own best-guess placeholder made
+            // before that port was curated — if the new, comprehensive default list now
+            // has a real entry for that exact code, the curated default must win. Letting
+            // a stale auto-guess shadow it is exactly what caused the same file to show
+            // different EEA/Non-EEA classifications in different browsers.
+            if (e.source === 'custom' || e.source === 'manual' || !PORT_REGISTRY[e.code]) {
               PORT_REGISTRY[e.code] = e;
             }
           });
@@ -2630,13 +3634,23 @@
       const entry = PORT_REGISTRY[code];
       if (!entry) return;
       entry[field] = value;
+      const isCategoryField = (field === 'mrv_category' || field === 'fueleu_category');
       if (field === 'name') {
         entry.source = 'manual';
       } else {
         entry.source = 'custom';
       }
-      savePortRegistry();
-      if (field === 'mrv_category' || field === 'fueleu_category') renderPortRegistry();
+      if (isCategoryField) {
+        // Deliberately NOT calling savePortRegistry() here: MRV/FuelEU category
+        // edits are only persisted when the user explicitly saves a backup via
+        // the "📤 Save to Google Drive" popup (or the manual Save XML button).
+        // The change still applies for the rest of this session (reclassification
+        // below), but a reload without exporting/importing will lose it.
+        renderPortRegistry();
+        openGDrivePopup(entry, field);
+      } else {
+        savePortRegistry();
+      }
       reclassifyExisting();
     }
 
@@ -3367,10 +4381,15 @@
 
         activeFuels.forEach(ft => {
           const th = document.createElement('th');
-          th.textContent = ft.length > 20 ? ft.slice(0, 18) + '…' : ft;
+          th.textContent = ft;
           th.title = ft + ' (t)';
           th.style.maxWidth = '110px';
-          th.style.textAlign = 'right';
+          th.style.width = '110px';
+          th.style.textAlign = 'center';
+          th.style.whiteSpace = 'normal';
+          th.style.wordBreak = 'break-word';
+          th.style.lineHeight = '1.3';
+          th.style.verticalAlign = 'bottom';
           fieldRow.appendChild(th);
         });
       }
@@ -3717,18 +4736,45 @@
     function fmtMrvGhg(v) {
       return (parseFloat(v) || 0).toLocaleString('de-CH', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
     }
-    function getMrvCategoryForRow(r) {
+    // =============================================
+    // REGULATORY METADATA — shared between EU MRV & FuelEU Maritime blocks
+    // =============================================
+    const REGIME_META = {
+      mrv: {
+        key: 'mrv',
+        chip: 'MRV',
+        label: 'EU MRV',
+        reg: 'Regulation (EU) 2015/757',
+        artNote: 'per Regulation (EU) 2015/757, Art. 9',
+        headerBg: '#162c5e',
+        headerText: '#a8c4f0',
+        accent: '#3a6bc4',
+      },
+      fueleu: {
+        key: 'fueleu',
+        chip: 'FuelEU',
+        label: 'FuelEU Maritime',
+        reg: 'Regulation (EU) 2023/1805',
+        artNote: 'per Regulation (EU) 2023/1805',
+        headerBg: '#26114a',
+        headerText: '#c4a8f0',
+        accent: '#7a4bc4',
+      }
+    };
+
+    function getGhgCategoryForRow(r, regime) {
       if (!r) return null;
-      if (r.type === 'EEA-EEA') return 'between';
-      if (r.type === 'EEA-NonEEA') return 'from';
-      if (r.type === 'NonEEA-EEA') return 'to';
-      if (r.type === 'EEA-Port') return 'port';
+      const t = regime === 'fueleu' ? r.fueleu_type : r.type;
+      if (t === 'EEA-EEA') return 'between';
+      if (t === 'EEA-NonEEA') return 'from';
+      if (t === 'NonEEA-EEA') return 'to';
+      if (t === 'EEA-Port') return 'port';
       return null;
     }
-    function calculateMrvGhgSummary() {
+    function calculateGhgSummary(regime) {
       const cats = { between: emptyMrvBucket(), from: emptyMrvBucket(), to: emptyMrvBucket(), port: emptyMrvBucket(), berth: emptyMrvBucket(), total: emptyMrvBucket() };
       classifiedData.forEach(r => {
-        const category = getMrvCategoryForRow(r);
+        const category = getGhgCategoryForRow(r, regime);
         if (!category) return;
         const fuelsByType = (r.fuels_by_type && Object.keys(r.fuels_by_type).length) ? r.fuels_by_type : (r.fuel_type ? { [r.fuel_type]: parseFloat(r.fuel) || 0 } : {});
         Object.keys(fuelsByType).forEach(fuelName => {
@@ -3742,10 +4788,15 @@
       });
       return cats;
     }
-    function renderMrvGhgSummaryHtml() {
-      const s = calculateMrvGhgSummary();
+    // Backward-compatible aliases (MRV-only) — kept in case other code still references them.
+    function getMrvCategoryForRow(r) { return getGhgCategoryForRow(r, 'mrv'); }
+    function calculateMrvGhgSummary() { return calculateGhgSummary('mrv'); }
+
+    function renderGhgSummaryBlock(regime) {
+      const meta = REGIME_META[regime];
+      const s = calculateGhgSummary(regime);
       const rows = [
-        ['Total within scope of Regulation (EU) 2015/757', s.total, true, ''],
+        [`Total within scope of ${meta.reg}`, s.total, true, ''],
         ['Between ports under a MS jurisdiction', s.between, false, ''],
         ['Departed from ports under a MS jurisdiction', s.from, false, ''],
         ['Arriving to ports under a MS jurisdiction', s.to, false, ''],
@@ -3760,37 +4811,36 @@
       <td>${fmtMrvGhg(row[1].ch4)}</td>
     </tr>`).join('');
       return `
-    <div class="total-fuel-card summary-section">
       <div class="summary-section-title">
-        <span style="display:inline-block;width:3px;height:14px;border-radius:2px;background:var(--eu-gold);margin-right:4px;"></span>
+        <span style="display:inline-block;width:3px;height:14px;border-radius:2px;background:${meta.accent};margin-right:4px;"></span>
         GHG Emissions Summary
       </div>
       <div class="stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-bottom:1rem;">
-        <div class="stat-card highlight" style="background:var(--navy);color:var(--white);border-color:var(--navy);">
-          <div class="stat-label" style="color:var(--accent);">Total Aggregated GHG — All Scope</div>
+        <div class="stat-card highlight" style="background:${meta.headerBg};color:var(--white);border-color:${meta.headerBg};">
+          <div class="stat-label" style="color:${meta.headerText};">Total Aggregated GHG — All Scope</div>
           <div class="stat-value" style="color:var(--white);font-family:monospace;font-size:26px;">${fmtMrvGhg(s.total.ghg)}</div>
-          <div class="stat-sub" style="color:#b8c8df;">m tonnes CO₂-eq · Total emitted within the scope of Regulation (EU) 2015/757</div>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;border-top:1px solid rgba(255,255,255,.14);padding-top:10px;">
-            <div><div class="stat-label" style="color:#b8c8df;">CO₂</div><div style="font-family:monospace;font-weight:700;">${fmtMrvGhg(s.total.co2)}</div></div>
-            <div><div class="stat-label" style="color:#b8c8df;">CO₂-eq of N₂O</div><div style="font-family:monospace;font-weight:700;">${fmtMrvGhg(s.total.n2o)}</div></div>
-            <div><div class="stat-label" style="color:#b8c8df;">CO₂-eq of CH₄</div><div style="font-family:monospace;font-weight:700;">${fmtMrvGhg(s.total.ch4)}</div></div>
+          <div class="stat-sub" style="color:${meta.headerText};opacity:.9;">m tonnes CO₂-eq · Total emitted within the scope of ${meta.reg}</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;border-top:1px solid rgba(255,255,255,.16);padding-top:10px;">
+            <div><div class="stat-label" style="color:${meta.headerText};opacity:.9;">CO₂</div><div style="font-family:monospace;font-weight:700;">${fmtMrvGhg(s.total.co2)}</div></div>
+            <div><div class="stat-label" style="color:${meta.headerText};opacity:.9;">CO₂-eq of N₂O</div><div style="font-family:monospace;font-weight:700;">${fmtMrvGhg(s.total.n2o)}</div></div>
+            <div><div class="stat-label" style="color:${meta.headerText};opacity:.9;">CO₂-eq of CH₄</div><div style="font-family:monospace;font-weight:700;">${fmtMrvGhg(s.total.ch4)}</div></div>
           </div>
         </div>
         <div class="stat-card good">
           <div class="stat-label">Voyage Emissions (Between MS Ports)</div>
           <div class="stat-value" style="font-family:monospace;">${fmtMrvGhg(s.between.ghg)}</div>
-          <div class="stat-sub">CO₂-eq · Both departure & arrival within EU Member States</div>
+          <div class="stat-sub">CO₂-eq · Both departure &amp; arrival within EU Member States</div>
         </div>
-        <div class="stat-card" style="border-left:4px solid var(--eea-port);">
+        <div class="stat-card" style="border-left:4px solid ${meta.accent};">
           <div class="stat-label">Port Emissions (At Berth)</div>
           <div class="stat-value" style="font-family:monospace;">${fmtMrvGhg(s.berth.ghg)}</div>
           <div class="stat-sub">CO₂-eq · Occurred within ports under a MS jurisdiction at berth</div>
         </div>
       </div>
       <div class="summary-section-title" style="margin-top:1rem;">
-        <span style="display:inline-block;width:3px;height:14px;border-radius:2px;background:var(--navy);margin-right:4px;"></span>
+        <span style="display:inline-block;width:3px;height:14px;border-radius:2px;background:${meta.headerBg};margin-right:4px;"></span>
         GHG Emissions — Voyage Breakdown
-        <span style="font-size:10px;font-weight:600;color:var(--text-muted);text-transform:none;letter-spacing:0;margin-left:6px;">per Regulation (EU) 2015/757, Art. 9</span>
+        <span style="font-size:10px;font-weight:600;color:var(--text-muted);text-transform:none;letter-spacing:0;margin-left:6px;">${meta.artNote}</span>
       </div>
       <div class="table-wrap">
         <table class="summary-table" style="min-width:760px;">
@@ -3805,73 +4855,44 @@
           </thead>
           <tbody>${rows}</tbody>
         </table>
-      </div>
-    </div>`;
+      </div>`;
     }
 
-    function renderSummary() {
-      const activeFuels = getActiveFuelTypes();
+    // =============================================
+    // VOYAGE CASE TABLE — shared case definitions, regime-aware row filtering
+    // =============================================
+    const VOYAGE_CASES = [
+      { key: 'EEA-EEA', label: 'EEA → EEA', color: 'var(--eea-eea)', scope: '100%' },
+      { key: 'EEA-NonEEA', label: 'EEA → Non-EEA', color: 'var(--eea-non)', scope: '50%' },
+      { key: 'NonEEA-EEA', label: 'Non-EEA → EEA', color: 'var(--non-eea)', scope: '50%' },
+      { key: 'EEA-Port', label: 'EEA Port Call', color: 'var(--eea-port)', scope: '100%' },
+      { key: 'EEA-OMR', label: 'EEA-OMR', color: 'var(--omr)', scope: 'mixed', omrKey: 'EEA-OMR' },
+      { key: 'OMR-EEA', label: 'OMR-EEA', color: 'var(--omr)', scope: 'mixed', omrKey: 'OMR-EEA' },
+      { key: 'OMR-Port', label: 'OMR Port', color: 'var(--omr)', scope: 'mixed', omrKey: 'OMR Port' },
+      { key: 'NonEEA-NonEEA', label: 'Out of Scope', color: '#888', scope: '0%' },
+    ];
 
-      const CASES = [
-        { key: 'EEA-EEA', label: 'EEA → EEA', color: 'var(--eea-eea)', bg: 'var(--eea-eea-bg)', scope: '100%' },
-        { key: 'EEA-NonEEA', label: 'EEA → Non-EEA', color: 'var(--eea-non)', bg: 'var(--eea-non-bg)', scope: '50%' },
-        { key: 'NonEEA-EEA', label: 'Non-EEA → EEA', color: 'var(--non-eea)', bg: 'var(--non-eea-bg)', scope: '50%' },
-        { key: 'EEA-Port', label: 'EEA Port Call', color: 'var(--eea-port)', bg: 'var(--eea-port-bg)', scope: '100%' },
-        { key: 'EEA-OMR', label: 'EEA-OMR', color: 'var(--omr)', bg: 'var(--omr-bg)', scope: 'mixed', omrFilter: r => r.omr_label === 'EEA-OMR' },
-        { key: 'OMR-EEA', label: 'OMR-EEA', color: 'var(--omr)', bg: 'var(--omr-bg)', scope: 'mixed', omrFilter: r => r.omr_label === 'OMR-EEA' },
-        { key: 'OMR-Port', label: 'OMR Port', color: 'var(--omr)', bg: 'var(--omr-bg)', scope: 'mixed', omrFilter: r => r.omr_label === 'OMR Port' },
-        { key: 'NonEEA-NonEEA', label: 'Out of Scope', color: '#888', bg: '#f5f5f5', scope: '0%' },
-      ];
+    function getRowsForCase(caseObj, regime) {
+      const typeField = regime === 'fueleu' ? 'fueleu_type' : 'type';
+      const omrField = regime === 'fueleu' ? 'fueleu_is_omr' : 'is_omr';
+      const omrLabelField = regime === 'fueleu' ? 'fueleu_omr_label' : 'omr_label';
+      if (caseObj.omrKey) return classifiedData.filter(r => r[omrLabelField] === caseObj.omrKey);
+      return classifiedData.filter(r => r[typeField] === caseObj.key && !r[omrField]);
+    }
 
-      function getRows(caseObj) {
-        if (caseObj.omrFilter) return classifiedData.filter(caseObj.omrFilter);
-        // EEA-Port, EEA-EEA, EEA-NonEEA, NonEEA-EEA, NonEEA-NonEEA: exclude OMR voyages
-        return classifiedData.filter(r => r.type === caseObj.key && !r.is_omr);
-      }
+    function renderCaseTableBlock(regime, activeFuels) {
+      const meta = REGIME_META[regime];
 
-      function sumFuel(rows, ft) {
-        return rows.reduce((s, r) => s + (r.fuels_by_type && r.fuels_by_type[ft] ? r.fuels_by_type[ft] : 0), 0);
-      }
+      function sumFuel(rows, ft) { return rows.reduce((s, r) => s + (r.fuels_by_type && r.fuels_by_type[ft] ? r.fuels_by_type[ft] : 0), 0); }
+      function sumDist(rows) { return rows.reduce((s, r) => s + (parseFloat(r.distance) || 0), 0); }
+      function sumTotalFuel(rows) { return rows.reduce((s, r) => s + (parseFloat(r.fuel) || 0), 0); }
 
-      function sumDist(rows) {
-        return rows.reduce((s, r) => s + (parseFloat(r.distance) || 0), 0);
-      }
-
-      function sumTotalFuel(rows) {
-        return rows.reduce((s, r) => s + (parseFloat(r.fuel) || 0), 0);
-      }
-
-      // ---- Overall Totals by Fuel Type ----
-      const totalFuelHtml = activeFuels.length ? `
-    <div class="total-fuel-card summary-section">
-      <div class="summary-section-title" style="--c:var(--eu-gold)">
-        <span style="display:inline-block;width:3px;height:14px;border-radius:2px;background:var(--eu-gold);margin-right:4px;"></span>
-        Total Fleet-Wide Fuel Consumption by Type
-      </div>
-      <div class="fuel-type-grid">
-        ${activeFuels.map(ft => {
-        const total = classifiedData.reduce((s, r) => s + (r.fuels_by_type && r.fuels_by_type[ft] ? r.fuels_by_type[ft] : 0), 0);
-        return `<div class="fuel-type-card">
-            <div class="ft-name">${ft}</div>
-            <div class="ft-value">${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-            <div class="ft-unit">metric tonnes (t)</div>
-          </div>`;
-      }).join('')}
-      </div>
-      <div style="margin-top:1rem; display:flex; gap:2rem; font-size:12.5px; color:var(--text-muted); flex-wrap:wrap;">
-        <span>📏 <strong>Total Distance:</strong> ${classifiedData.reduce((s, r) => s + (parseFloat(r.distance) || 0), 0).toLocaleString()} nm</span>
-        <span>⛽ <strong>Total Fuel (all types):</strong> ${classifiedData.reduce((s, r) => s + (parseFloat(r.fuel) || 0), 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} t</span>
-        <span>🚢 <strong>Total Voyages:</strong> ${classifiedData.length}</span>
-      </div>
-    </div>` : `<div class="alert alert-info">ℹ️ No fuel consumption data found in the uploaded file. Please use the template with fuel type columns.</div>`;
-
-      // ---- Case-by-Case breakdown ----
       const fuelHeaders = activeFuels.map(ft =>
         `<th title="${ft}">${ft.length > 22 ? ft.slice(0, 20) + '…' : ft} (t)</th>`
       ).join('');
 
-      const caseRows = CASES.map(c => {
-        const rows = getRows(c);
+      const caseRows = VOYAGE_CASES.map(c => {
+        const rows = getRowsForCase(c, regime);
         if (!rows.length) return '';
         const dist = sumDist(rows);
         const totalF = sumTotalFuel(rows);
@@ -3897,10 +4918,9 @@
         return `<td>${v > 0 ? v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '—'}</td>`;
       }).join('');
 
-      const caseTableHtml = `
-    <div class="total-fuel-card summary-section">
+      return `
       <div class="summary-section-title">
-        <span style="display:inline-block;width:3px;height:14px;border-radius:2px;background:var(--navy);margin-right:4px;"></span>
+        <span style="display:inline-block;width:3px;height:14px;border-radius:2px;background:${meta.headerBg};margin-right:4px;"></span>
         Distance &amp; Fuel by Voyage Case
       </div>
       <div class="table-wrap">
@@ -3923,11 +4943,72 @@
             </tr>
           </tfoot>
         </table>
+      </div>`;
+    }
+
+    // =============================================
+    // REGIME BLOCK — wraps the case table + GHG summary + GHG breakdown
+    // for one regulation (EU MRV or FuelEU Maritime) in a clearly labelled card
+    // =============================================
+    function renderRegimeBlock(regime, activeFuels) {
+      const meta = REGIME_META[regime];
+      return `
+    <div class="regime-block">
+      <div class="regime-block-header" style="background:${meta.headerBg};">
+        <div class="rb-title">
+          <span class="regime-chip" style="background:${meta.accent};">${meta.chip}</span>
+          ${meta.label}
+        </div>
+        <div class="rb-reg" style="color:${meta.headerText};">${meta.reg}</div>
+      </div>
+      <div class="regime-block-body">
+        ${renderCaseTableBlock(regime, activeFuels)}
+        <div style="margin-top:1.5rem;">${renderGhgSummaryBlock(regime)}</div>
       </div>
     </div>`;
-
-      document.getElementById('summaryContent').innerHTML = totalFuelHtml + caseTableHtml + renderMrvGhgSummaryHtml();
     }
+
+    function renderSummary() {
+      const activeFuels = getActiveFuelTypes();
+
+      // ---- Overall Totals by Fuel Type ----
+      const totalFuelHtml = activeFuels.length ? `
+    <div class="total-fuel-card summary-section">
+      <div class="summary-section-title" style="--c:var(--eu-gold)">
+        <span style="display:inline-block;width:3px;height:14px;border-radius:2px;background:var(--eu-gold);margin-right:4px;"></span>
+        Total Fleet-Wide Fuel Consumption by Type
+      </div>
+      <div class="fuel-type-grid">
+        ${activeFuels.map(ft => {
+        const total = classifiedData.reduce((s, r) => s + (r.fuels_by_type && r.fuels_by_type[ft] ? r.fuels_by_type[ft] : 0), 0);
+        return `<div class="fuel-type-card">
+            <div class="ft-name">${ft}</div>
+            <div class="ft-value">${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+            <div class="ft-unit">metric tonnes (t)</div>
+          </div>`;
+      }).join('')}
+      </div>
+      <div style="margin-top:1rem; display:flex; gap:2rem; font-size:12.5px; color:var(--text-muted); flex-wrap:wrap;">
+        <span>📏 <strong>Total Distance:</strong> ${classifiedData.reduce((s, r) => s + (parseFloat(r.distance) || 0), 0).toLocaleString()} nm</span>
+        <span>⛽ <strong>Total Fuel (all types):</strong> ${classifiedData.reduce((s, r) => s + (parseFloat(r.fuel) || 0), 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} t</span>
+        <span>🚢 <strong>Total Voyages:</strong> ${classifiedData.length}</span>
+      </div>
+    </div>` : `<div class="alert alert-info">ℹ️ No fuel consumption data found in the uploaded file. Please use the template with fuel type columns.</div>`;
+
+      // ---- Regulatory breakdown: one card per regulation, each with its own
+      //      Distance & Fuel by Voyage Case table, GHG Emissions Summary and
+      //      GHG Emissions — Voyage Breakdown table, classified independently. ----
+      const regulatoryHeaderHtml = `
+    <div class="summary-section-title" style="margin-bottom:0.9rem;">
+      <span style="display:inline-block;width:3px;height:14px;border-radius:2px;background:var(--eu-gold);margin-right:4px;"></span>
+      Regulatory Breakdown — Classified Independently per Regulation
+    </div>`;
+
+      const regimeBlocksHtml = renderRegimeBlock('mrv', activeFuels) + renderRegimeBlock('fueleu', activeFuels);
+
+      document.getElementById('summaryContent').innerHTML = totalFuelHtml + regulatoryHeaderHtml + regimeBlocksHtml;
+    }
+
 
 
     function buildExportData() {
@@ -4322,7 +5403,67 @@
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') closeFuelPopup();
     });
+
+    // =============================================
+    // GOOGLE DRIVE SAVE POPUP LOGIC
+    // =============================================
+    const CAT_LABEL_GD = { EEA: 'EEA', NONEEA: 'Non-EEA', OMR: 'OMR', NA: 'N/A' };
+    const FIELD_LABEL_GD = { mrv_category: 'MRV Category (EU) 2015/757', fueleu_category: 'FuelEU Category (EU) 2023/1805' };
+
+    function openGDrivePopup(entry, field) {
+      const label = document.getElementById('gdrivePopupPortLabel');
+      if (label) {
+        const fieldName = FIELD_LABEL_GD[field] || field;
+        const catName = CAT_LABEL_GD[entry[field]] || entry[field];
+        label.textContent = `${fieldName} for ${entry.code} (${entry.name || ''}) was set to "${catName}" — applied for this session only.`;
+      }
+      document.getElementById('gdrivePopupOverlay').classList.add('open');
+    }
+
+    function closeGDrivePopup() {
+      document.getElementById('gdrivePopupOverlay').classList.remove('open');
+    }
+
+    function saveRegistryToGoogleDrive() {
+      // The app has no server-side component and cannot authenticate to a user's
+      // Google account directly from a local HTML file, so this downloads the
+      // registry XML (same as "Save XML") and opens Google Drive in a new tab so
+      // the user can upload/drop the file in themselves.
+      savePortRegistryXML();
+      window.open('https://drive.google.com/drive/my-drive', '_blank');
+      closeGDrivePopup();
+    }
+
+    const gdriveOverlayEl = document.getElementById('gdrivePopupOverlay');
+    if (gdriveOverlayEl) {
+      gdriveOverlayEl.addEventListener('click', function (e) {
+        if (e.target === this) closeGDrivePopup();
+      });
+    }
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeGDrivePopup();
+    });
+
+    // =============================================
+    // HELP MODAL LOGIC
+    // =============================================
+    function openHelp() {
+      document.getElementById('helpOverlay').classList.add('open');
+    }
+    function closeHelp() {
+      document.getElementById('helpOverlay').classList.remove('open');
+    }
+    const helpOverlayEl = document.getElementById('helpOverlay');
+    if (helpOverlayEl) {
+      helpOverlayEl.addEventListener('click', function (e) {
+        if (e.target === this) closeHelp();
+      });
+    }
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeHelp();
+    });
   </script>
+
 
 </body>
 
