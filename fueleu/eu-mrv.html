@@ -5466,6 +5466,46 @@
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') closeHelp();
     });
+
+    window.generateStateXml = function() {
+      const entries = getSortedRegistryEntries();
+      const xmlRows = entries.map(e => `  <port code="${xmlEscape(e.code)}" mrv_category="${xmlEscape(e.mrv_category)}" fueleu_category="${xmlEscape(e.fueleu_category)}" source="${xmlEscape(e.source || '')}">${xmlEscape(e.name || '')}</port>`).join('\n');
+      return `<?xml version="1.0" encoding="UTF-8"?>\n<portRegistry>\n${xmlRows}\n</portRegistry>`;
+    };
+
+    window.importXmlFromText = function(xmlText) {
+      // Clean up any literal backslash-n from previously corrupted saves
+      xmlText = xmlText.replace(/\\n/g, '\n');
+      const xmlDoc = new DOMParser().parseFromString(xmlText, 'application/xml');
+      if (xmlDoc.getElementsByTagName('parsererror').length) throw new Error('Invalid XML data.');
+      const ports = Array.from(xmlDoc.getElementsByTagName('port'));
+      if (!ports.length) throw new Error('No port entries found.');
+      
+      let added = 0, updated = 0;
+      ports.forEach(p => {
+        const code = String(p.getAttribute('code') || '').trim().toUpperCase();
+        if (!code) return;
+        const mrv_category = normaliseXmlCategory(p.getAttribute('mrv_category'), 'NONEEA');
+        const fueleu_category = normaliseXmlCategory(p.getAttribute('fueleu_category'), mrv_category);
+        const sourceRaw = String(p.getAttribute('source') || 'custom').trim().toLowerCase();
+        const source = ['default', 'custom', 'manual', 'auto'].includes(sourceRaw) ? sourceRaw : 'custom';
+        const name = String(p.textContent || code).trim();
+        
+        if (PORT_REGISTRY[code]) {
+           const ex = PORT_REGISTRY[code];
+           if (ex.mrv_category !== mrv_category || ex.fueleu_category !== fueleu_category || ex.name !== name || ex.source !== source) {
+             PORT_REGISTRY[code] = { code, name, mrv_category, fueleu_category, source };
+             updated++;
+           }
+        } else {
+           PORT_REGISTRY[code] = { code, name, mrv_category, fueleu_category, source };
+           added++;
+        }
+      });
+      savePortRegistry();
+      renderPortRegistry();
+      reclassifyExisting();
+    };
   </script>
 
 
@@ -5523,44 +5563,6 @@
 
     window.closeCloudModal = function () {
       document.getElementById('cloudModal').style.display = 'none';
-    };
-
-    window.generateStateXml = function() {
-      const entries = getSortedRegistryEntries();
-      const xmlRows = entries.map(e => `  <port code="${xmlEscape(e.code)}" mrv_category="${xmlEscape(e.mrv_category)}" fueleu_category="${xmlEscape(e.fueleu_category)}" source="${xmlEscape(e.source || '')}">${xmlEscape(e.name || '')}</port>`).join('\\n');
-      return `<?xml version="1.0" encoding="UTF-8"?>\\n<portRegistry>\\n${xmlRows}\\n</portRegistry>`;
-    };
-
-    window.importXmlFromText = function(xmlText) {
-      const xmlDoc = new DOMParser().parseFromString(xmlText, 'application/xml');
-      if (xmlDoc.getElementsByTagName('parsererror').length) throw new Error('Invalid XML data.');
-      const ports = Array.from(xmlDoc.getElementsByTagName('port'));
-      if (!ports.length) throw new Error('No port entries found.');
-      
-      let added = 0, updated = 0;
-      ports.forEach(p => {
-        const code = String(p.getAttribute('code') || '').trim().toUpperCase();
-        if (!code) return;
-        const mrv_category = normaliseXmlCategory(p.getAttribute('mrv_category'), 'NONEEA');
-        const fueleu_category = normaliseXmlCategory(p.getAttribute('fueleu_category'), mrv_category);
-        const sourceRaw = String(p.getAttribute('source') || 'custom').trim().toLowerCase();
-        const source = (sourceRaw === 'default') ? 'default' : (sourceRaw === 'auto' ? 'auto' : 'custom');
-        const name = String(p.textContent || '').trim();
-        const existingIdx = window.PORT_REGISTRY.findIndex(x => x.code === code);
-        if (existingIdx >= 0) {
-          const ex = window.PORT_REGISTRY[existingIdx];
-          if (ex.mrv_category !== mrv_category || ex.fueleu_category !== fueleu_category || ex.name !== name || ex.source !== source) {
-            window.PORT_REGISTRY[existingIdx] = { code, name, mrv_category, fueleu_category, source };
-            updated++;
-          }
-        } else {
-          window.PORT_REGISTRY.push({ code, name, mrv_category, fueleu_category, source });
-          added++;
-        }
-      });
-      savePortRegistryToLocalStorage();
-      renderPortRegistry();
-      refreshVoyageTables();
     };
 
     function initFirebase() {
