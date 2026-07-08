@@ -6592,6 +6592,406 @@
   </style>
   <!-- HIDE_LOAD_SAMPLE_CASE_BUTTON_PATCH_END -->
 
+<style>
+/* Cloud Sync & Google SSO Styles */
+#userProfileWidget {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+#btnGoogleSignIn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: var(--text);
+  transition: all 0.2s ease;
+}
+
+#btnGoogleSignIn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(51, 214, 255, 0.5);
+  box-shadow: 0 0 10px rgba(51, 214, 255, 0.2);
+}
+
+#userProfileInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  position: relative;
+  user-select: none;
+}
+
+#userAvatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid rgba(51, 214, 255, 0.4);
+  box-shadow: 0 0 8px rgba(51, 214, 255, 0.2);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+#userAvatar:hover {
+  transform: scale(1.05);
+  border-color: rgba(112, 255, 184, 0.7);
+}
+
+#userDropdown {
+  display: none;
+  position: absolute;
+  top: 42px;
+  right: 0;
+  background: linear-gradient(180deg, #0e1c2e 0%, #08111e 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 14px;
+  z-index: 1001;
+  min-width: 220px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
+  animation: fadeInDropdown 0.2s ease-out;
+}
+
+@keyframes fadeInDropdown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#userDropdownName {
+  font-weight: 800;
+  color: #fff;
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+
+#userDropdownEmail {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 12px;
+  word-break: break-all;
+}
+
+#userDropdown button {
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  font-size: 12px;
+  margin-bottom: 8px;
+  border-radius: 10px;
+}
+
+#userDropdown button:last-child {
+  margin-bottom: 0;
+}
+
+.cloud-case-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.2s ease;
+}
+
+.cloud-case-item:hover {
+  background: rgba(51, 214, 255, 0.04);
+}
+
+.cloud-case-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  text-align: left;
+}
+
+.cloud-case-title {
+  font-weight: 700;
+  font-size: 13.5px;
+  color: #fff;
+}
+
+.cloud-case-meta {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.cloud-case-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.cloud-case-actions button {
+  padding: 6px 10px;
+  font-size: 11px;
+  border-radius: 8px;
+  font-weight: 700;
+}
+</style>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="../config.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDocs, collection, query, where, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  let db, auth;
+
+  function initFirebase() {
+    const config = window.firebaseConfig;
+    if (config && config.apiKey) {
+      const app = initializeApp(config);
+      db = getFirestore(app);
+      auth = getAuth(app);
+
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          document.getElementById('btnGoogleSignIn').style.display = 'none';
+          document.getElementById('userProfileInfo').style.display = 'flex';
+          document.getElementById('userAvatar').src = user.photoURL || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
+          document.getElementById('userDropdownName').textContent = user.displayName || 'User';
+          document.getElementById('userDropdownEmail').textContent = user.email || '';
+
+          // Show Cloud Sync button in toolbar
+          const topToolbar = document.querySelector('.top-toolbar');
+          if (topToolbar && !document.getElementById('btnCloudSync')) {
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-secondary';
+            btn.id = 'btnCloudSync';
+            btn.style.background = 'linear-gradient(135deg, rgba(51, 214, 255, 0.15), rgba(0, 126, 247, 0.25))';
+            btn.style.borderColor = 'rgba(51, 214, 255, 0.3)';
+            btn.style.order = '3';
+            btn.textContent = 'Cloud Sync';
+            btn.onclick = () => window.openCloudModal();
+            const resetBtn = document.getElementById('btnResetTop');
+            if (resetBtn) {
+              topToolbar.insertBefore(btn, resetBtn);
+            } else {
+              topToolbar.appendChild(btn);
+            }
+          }
+          loadFirestoreCases();
+        } else {
+          document.getElementById('btnGoogleSignIn').style.display = 'flex';
+          document.getElementById('userProfileInfo').style.display = 'none';
+          const btn = document.getElementById('btnCloudSync');
+          if (btn) btn.remove();
+        }
+      });
+    }
+  }
+
+  window.handleGoogleSignIn = function () {
+    if (!auth) {
+      alert('Firebase credentials not configured. Please enter them in the config.js file.');
+      return;
+    }
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider).catch((e) => {
+      console.error('Sign-in error:', e);
+      if (e.code === 'auth/popup-blocked') {
+        alert(
+          '❌ Pop-up Blocked!\n\n' +
+          'Please click the pop-up blocker icon in your browser address bar to allow pop-ups for this site, then try signing in again.'
+        );
+      } else if (e.code === 'auth/network-request-failed' || (e.message && e.message.includes('network'))) {
+        alert(
+          '❌ Sign-in Blocked by Ad-blocker!\n\n' +
+          'Your adblocker or privacy extension blocked the connection to Firebase.\n\n' +
+          'Please disable your adblocker or Brave Shields for this site to sign in.'
+        );
+      } else {
+        alert(
+          '❌ Sign-in Failed\n\n' +
+          e.message + '\n\n' +
+          'Note: If you are using an adblocker or privacy extension, please disable it for this site.'
+        );
+      }
+    });
+  };
+
+  window.handleGoogleSignOut = async function () {
+    if (!auth) return;
+    try {
+      await signOut(auth);
+    } catch (e) {
+      console.error('Sign-out error:', e);
+    }
+  };
+
+  async function loadFirestoreCases() {
+    const listEl = document.getElementById('firestoreCasesList');
+    if (!listEl) return;
+    const user = auth?.currentUser;
+    if (!user || !db) return;
+
+    listEl.innerHTML = '<div style="padding: 16px; text-align: center; color: var(--muted); font-size: 13px;">Loading cases...</div>';
+
+    try {
+      const q = query(collection(db, "cases"), where("userId", "==", user.uid));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        listEl.innerHTML = '<div style="padding: 24px; text-align: center; color: var(--muted); font-size: 13.5px;">No saved cases found in cloud.</div>';
+        return;
+      }
+
+      listEl.innerHTML = '';
+      let renderCount = 0;
+      const currentCalcType = 'CII (AER)';
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        if (data.calculator && data.calculator !== currentCalcType) return;
+        renderCount++;
+        const item = document.createElement('div');
+        item.className = 'cloud-case-item';
+
+        const info = document.createElement('div');
+        info.className = 'cloud-case-info';
+
+        const title = document.createElement('div');
+        title.className = 'cloud-case-title';
+        title.textContent = data.caseName;
+
+        const meta = document.createElement('div');
+        meta.className = 'cloud-case-meta';
+        const dateStr = data.updatedAt ? new Date(data.updatedAt).toLocaleString() : 'N/A';
+        const calcType = data.calculator ? ` | Type: ${data.calculator}` : '';
+        meta.textContent = `Vessel: ${data.shipName || 'Unknown'} | Year: ${data.reportingYear || 'N/A'}${calcType} | Saved: ${dateStr}`;
+
+        info.appendChild(title);
+        info.appendChild(meta);
+
+        const actions = document.createElement('div');
+        actions.className = 'cloud-case-actions';
+
+        const loadBtn = document.createElement('button');
+        loadBtn.className = 'btn btn-primary';
+        loadBtn.style.padding = '6px 10px';
+        loadBtn.textContent = 'Load';
+        loadBtn.onclick = () => {
+          try {
+            const obj = window.parseXmlText(data.xmlText);
+            window.applyImportedState(obj);
+            window.closeCloudModal();
+            alert(`Case "${data.caseName}" successfully loaded from cloud.`);
+          } catch (e) {
+            alert('Failed to load case data: ' + e.message);
+          }
+        };
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'btn btn-reset';
+        delBtn.style.padding = '6px 10px';
+        delBtn.style.background = '#C00000';
+        delBtn.textContent = 'Delete';
+        delBtn.onclick = async () => {
+          if (confirm(`Are you sure you want to delete the case "${data.caseName}"?`)) {
+            try {
+              await deleteDoc(doc(db, "cases", docSnap.id));
+              loadFirestoreCases();
+            } catch (err) {
+              alert('Delete failed: ' + err.message);
+            }
+          }
+        };
+
+        actions.appendChild(loadBtn);
+        actions.appendChild(delBtn);
+        item.appendChild(info);
+        item.appendChild(actions);
+        listEl.appendChild(item);
+      });
+      if (renderCount === 0) {
+        listEl.innerHTML = '<div style="padding: 24px; text-align: center; color: var(--muted); font-size: 13.5px;">No saved cases found in cloud for this calculator.</div>';
+      }
+    } catch (e) {
+      console.error('Error fetching cases:', e);
+      listEl.innerHTML = `<div style="padding: 16px; text-align: center; color: var(--bad); font-size: 13px;">Error loading cases: ${e.message}</div>`;
+    }
+  }
+
+  window.saveToFirestore = async function () {
+    const caseNameInput = document.getElementById('cloudSaveName');
+    const caseName = caseNameInput?.value?.trim();
+    if (!caseName) {
+      alert('Please enter a case name.');
+      return;
+    }
+    const user = auth?.currentUser;
+    if (!user || !db) {
+      alert('Not signed in.');
+      return;
+    }
+
+    try {
+      const payload = window.buildCiiXmlPayload();
+      const xmlText = window.toXml(payload);
+      const shipName = document.getElementById('vesselName')?.value || '';
+      const reportingYear = document.getElementById('year')?.value || '';
+      const caseId = `${user.uid}_${caseName.replace(/[^a-z0-9_\-]+/gi, '_')}`;
+      const calcType = 'CII (AER)';
+
+      await setDoc(doc(db, "cases", caseId), {
+        userId: user.uid,
+        caseName: caseName,
+        shipName: shipName,
+        calculator: calcType,
+        reportingYear: reportingYear,
+        xmlText: xmlText,
+        updatedAt: Date.now()
+      });
+
+      if (caseNameInput) caseNameInput.value = '';
+      loadFirestoreCases();
+      alert(`Case "${caseName}" successfully saved to cloud.`);
+    } catch (e) {
+      console.error('Error saving case:', e);
+      alert('Failed to save case: ' + e.message);
+    }
+  };
+
+  initFirebase();
+</script>
+<script>
+  window.toggleUserDropdown = function (event) {
+    event.stopPropagation();
+    const dd = document.getElementById('userDropdown');
+    if (dd) {
+      dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
+    }
+  };
+  document.addEventListener('click', () => {
+    const dd = document.getElementById('userDropdown');
+    if (dd) dd.style.display = 'none';
+  });
+
+  window.openCloudModal = function () {
+    const cloudModal = document.getElementById('cloudModal');
+    if(cloudModal) cloudModal.classList.add('show');
+    const ship = document.getElementById('vesselName')?.value || '';
+    const year = document.getElementById('year')?.value || '';
+    const defaultName = `${ship} ${year}`.trim() || 'My Case';
+
+    const saveNameInput = document.getElementById('cloudSaveName');
+    if (saveNameInput) saveNameInput.value = defaultName;
+  };
+
+  window.closeCloudModal = function () {
+    const cloudModal = document.getElementById('cloudModal');
+    if(cloudModal) cloudModal.classList.remove('show');
+  };
+</script>
 </head>
 
 <body>
@@ -6675,6 +7075,37 @@
         <div class="page-help-mobile-center"><button class="btn-help-circle" id="btnPageHelp"
             onclick="document.getElementById('helpModal').classList.add('show')" title="Page Help"
             aria-label="Open help guide">?</button></div>
+<!-- User Profile and Google SSO Sign-in -->
+<div id="userProfileWidget">
+  <button class="btn btn-secondary" id="btnGoogleSignIn" onclick="handleGoogleSignIn()">
+    <svg width="14" height="14" viewBox="0 0 18 18" style="margin-right: 4px; vertical-align: middle;">
+      <path
+        d="M17.64 9.2c0-.63-.06-1.25-.16-1.84H9v3.49h4.84a4.14 4.14 0 0 1-1.8 2.71v2.26h2.91c1.7-1.56 2.69-3.86 2.69-6.62z"
+        fill="#4285F4" />
+      <path
+        d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.26c-.8.54-1.83.86-3.05.86-2.34 0-4.32-1.58-5.03-3.7H.95v2.3A9 9 0 0 0 9 18z"
+        fill="#34A853" />
+      <path
+        d="M3.97 10.72A5.4 5.4 0 0 1 3.68 9c0-.6.1-1.18.29-1.72v-2.3H.95A9 9 0 0 0 0 9c0 1.92.6 3.7 1.63 5.17l2.34-1.72z"
+        fill="#FBBC05" />
+      <path d="M9 3.58c1.32 0 2.5.45 3.44 1.35L15 2.4A9 9 0 0 0 .95 4.98l3.02 2.3c.71-2.12 2.69-3.7 5.03-3.7z"
+        fill="#EA4335" />
+    </svg>
+    Sign In
+  </button>
+  <div id="userProfileInfo" style="display: none;" onclick="toggleUserDropdown(event)">
+    <img id="userAvatar" src="" alt="User Avatar">
+    <div id="userDropdown">
+      <div id="userDropdownName"></div>
+      <div id="userDropdownEmail"></div>
+      <button class="btn btn-secondary" onclick="openCloudModal()"
+        style="background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1);">Cloud
+        Saves</button>
+      <button class="btn btn-reset" onclick="handleGoogleSignOut()"
+        style="background: #C00000; color: #fff;">Sign Out</button>
+    </div>
+  </div>
+</div>
       </div>
     </div>
   </div><!-- /#cii-sticky-wrap -->
@@ -10570,6 +11001,30 @@
 
 
   <!-- TF_TRANSFERRED_FUEL_EXCEL_FORMULA_PATCH_2026_06_26: TFj now uses (1 - AF_Tanker,STS) * FCs,j STS and/or (1 - AF_Tanker,Shuttle) * FCs,j Shuttle as per attached Excel. -->
+<!-- CLOUD MODAL -->
+<div class="modal-backdrop" id="cloudModal" role="dialog" aria-modal="true" aria-labelledby="cloudModalTitle" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="modal-card" style="width: min(700px, 100%); margin: auto; pointer-events: auto;">
+    <div class="modal-head" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <h3 style="margin: 0; font-size: 18px; color: #fff; display: flex; align-items: center; gap: 8px;">
+        <span style="color: var(--accent);">☁</span> Cloud Backup &amp; Saves
+      </h3>
+      <button class="modal-close" onclick="closeCloudModal()" style="background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer;">✕</button>
+    </div>
+    <div class="modal-body" id="tabContentFirestore">
+      <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+        <input type="text" id="cloudSaveName" placeholder="Enter case name to save (e.g., Vessel A 2025)" style="flex: 1; padding: 10px 12px; font-size: 13px;">
+        <button class="btn btn-primary" onclick="saveToFirestore()" style="font-size: 13px; border-radius: 14px;">Save Case</button>
+      </div>
+      <div id="firestoreCasesList" style="max-height: 250px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; background: rgba(255,255,255,0.01);">
+        <div style="padding: 16px; text-align: center; color: var(--muted); font-size: 13px;">Loading cases...</div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="closeCloudModal()">Close</button>
+    </div>
+  </div>
+</div>
+<!-- /CLOUD MODAL -->
 </body>
 
 </html>

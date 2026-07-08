@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Canadian CII Calculator — Web Version</title>
+<title>CII (AER) Calculator — Web Version</title>
 <style>
     :root{
       --bg:#0b1220;
@@ -406,7 +406,7 @@ canvas{width:100%;height:400px;background:linear-gradient(180deg,rgba(12,28,45,.
 .result-value{font-family:"Times New Roman", Georgia, serif;font-size:24px;font-weight:800;color:#0f172a}
 @media print {.print-formula-image-like .formula-top,.print-formula-image-like .formula-bottom{font-size:19px;}.worked-value{font-size:18px;}.result-value{font-size:22px;}}
 @media print {
- body{background:#ffffff !important;color:#0f172a !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ body{background:#ffffff !important;color:#0f172a !important;}
  header,main,.row,.modal-backdrop{display:none !important}
  .print-cover,.print-report{display:block !important}
  .print-cover{page-break-after:always;padding:34px 26px 26px;background:linear-gradient(180deg,#eff6ff 0%,#ffffff 48%,#ffffff 100%);border:2px solid #bfdbfe;border-radius:14px;box-shadow:0 0 0 6px #f8fbff inset;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:95vh}
@@ -1476,6 +1476,29 @@ th sub, td sub, .print-report sub, .corr-popup-fuel-table sub, .fc-table sub {fo
 </style>
 <!-- CUSTOM_PAGE_HELP_PATCH_END -->
 
+
+
+<!-- WIDTH_INCREASE_ONLY_PATCH_START -->
+<style>
+/* Width increase only: layout/CSS update. Calculation logic and JavaScript are not changed. */
+header,
+main,
+#cii-sticky-wrap .cii-top-bar {
+  max-width: 1440px !important;
+}
+
+/* Keep a small side gap on very wide screens while allowing the calculator cards to expand. */
+main {
+  width: min(1440px, calc(100vw - 48px)) !important;
+}
+
+header,
+#cii-sticky-wrap .cii-top-bar {
+  width: min(1440px, calc(100vw - 48px)) !important;
+}
+</style>
+<!-- WIDTH_INCREASE_ONLY_PATCH_END -->
+
 <style>
 /* Cloud Sync & Google SSO Styles */
 #userProfileWidget {
@@ -1928,7 +1951,7 @@ th sub, td sub, .print-report sub, .corr-popup-fuel-table sub, .fc-table sub {fo
           <path d="M15 18l-6-6 6-6" stroke="#c8deff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
-      <button class="nav-btn" id="btnNavHome" title="Go Home" aria-label="Go Home" onclick="window.location.href='../app.html'">
+      <button class="nav-btn" id="btnNavHome" title="Go Home" aria-label="Go Home" onclick="window.location.href='/'">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z" stroke="#c8deff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="M9 21V12h6v9" stroke="#c8deff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2020,6 +2043,7 @@ th sub, td sub, .print-report sub, .corr-popup-fuel-table sub, .fc-table sub {fo
     </div>
   </div>
 </div>
+
 </div>
   </div>
 </div>
@@ -4135,7 +4159,7 @@ calculate();
     });
     return fuels;
   }
-  window.buildCiiXmlPayload = function buildCiiXmlPayload(){
+  function buildCiiXmlPayload(){
     return {
       vesselName: byId('vesselName')?.value || '',
       imo: byId('imo')?.value || '',
@@ -4152,13 +4176,13 @@ calculate();
       correctionFactorState: JSON.stringify(window.correctionFactorState || {})
     };
   }
-  window.toXml = function toXml(payload){
+  function toXml(payload){
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n<cii>';
     Object.keys(payload).forEach((k)=>{ xml += `<${k}>${xmlEscape(payload[k])}</${k}>`; });
     xml += '</cii>';
     return xml;
   }
-  window.parseXmlText = function parseXmlText(txt){
+  function parseXmlText(txt){
     try{
       const parser = new DOMParser();
       const doc = parser.parseFromString(String(txt || ''), 'application/xml');
@@ -4202,7 +4226,7 @@ calculate();
     });
     if(typeof clearPartBValidation === 'function') clearPartBValidation();
   }
-  window.applyImportedState = function applyImportedState(obj){
+  function applyImportedState(obj){
     const setIf = (id,val)=>{ if(val !== undefined && val !== null && byId(id)) byId(id).value = val; };
     setIf('vesselName', obj.vesselName);
     setIf('imo', obj.imo);
