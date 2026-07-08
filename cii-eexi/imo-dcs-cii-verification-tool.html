@@ -5175,7 +5175,7 @@ window.addEventListener('DOMContentLoaded',()=>{buildTableHeaders();if(!document
 <script src="../config.js"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, GoogleAuthProvider, signInWithCredential, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, collection, addDoc, getDocs, doc, setDoc, getDoc, query, where, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   let auth, db, currentUser = null;
@@ -5213,21 +5213,21 @@ window.addEventListener('DOMContentLoaded',()=>{buildTableHeaders();if(!document
     });
   };
 
-  window.handleGoogleSignIn = function() {
-    google.accounts.id.initialize({
-      client_id: window.firebaseConfig.clientId,
-      callback: handleCredentialResponse
+  window.handleGoogleSignIn = function () {
+    if (!auth) {
+      alert('Firebase credentials not configured.');
+      return;
+    }
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider).catch((e) => {
+      console.error('Sign-in error:', e);
+      if (e.code === 'auth/popup-blocked') {
+        alert('❌ Pop-up Blocked!\\n\\nPlease click the pop-up blocker icon in your browser address bar to allow pop-ups for this site, then try signing in again.');
+      } else {
+        alert('❌ Sign-in Failed\\n\\n' + e.message);
+      }
     });
-    google.accounts.id.prompt();
   };
-
-  function handleCredentialResponse(response) {
-    const credential = GoogleAuthProvider.credential(response.credential);
-    signInWithCredential(auth, credential).catch(err => {
-       console.error("Sign-in error:", err);
-       alert("Google Sign-In failed.");
-    });
-  }
 
   window.handleSignOut = function() {
     signOut(auth).catch(err => console.error("Sign-out error:", err));
