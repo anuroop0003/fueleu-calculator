@@ -5258,13 +5258,20 @@ window.addEventListener('DOMContentLoaded',()=>{buildTableHeaders();if(!document
     
     try {
       showToast('Saving to cloud...');
-      const casesRef = collection(db, "imo_cii_cases");
-      await addDoc(casesRef, {
+      const shipName = document.getElementById('vesselName')?.value || 'Unknown';
+      const reportingYear = document.getElementById('reportingYear')?.value || 'N/A';
+      const caseId = `${currentUser.uid}_IMO_${caseName.replace(/[^a-z0-9_\-]+/gi, '_')}`;
+      
+      await setDoc(doc(db, "cases", caseId), {
         userId: currentUser.uid,
-        name: caseName,
-        xmlData: xmlStr,
-        updatedAt: serverTimestamp()
+        caseName: caseName,
+        shipName: shipName,
+        calculator: 'IMO_DCS_CII',
+        reportingYear: reportingYear,
+        xmlText: xmlStr,
+        updatedAt: Date.now()
       });
+      
       document.getElementById('cloudCaseName').value = '';
       showToast('✓ Saved to cloud successfully');
       loadFirestoreCases();
@@ -5280,7 +5287,7 @@ window.addEventListener('DOMContentLoaded',()=>{buildTableHeaders();if(!document
     listEl.innerHTML = '<div style="color:var(--muted); font-size:13px;">Loading cases...</div>';
     
     try {
-      const q = query(collection(db, "imo_cii_cases"), where("userId", "==", currentUser.uid));
+      const q = query(collection(db, "cases"), where("userId", "==", currentUser.uid));
       const querySnapshot = await getDocs(q);
       
       listEl.innerHTML = '';
@@ -5289,14 +5296,17 @@ window.addEventListener('DOMContentLoaded',()=>{buildTableHeaders();if(!document
         return;
       }
       
+      let renderCount = 0;
       querySnapshot.forEach((docSnap) => {
         const data = docSnap.data();
+        if (data.calculator && data.calculator !== 'IMO_DCS_CII') return;
+        renderCount++;
         const div = document.createElement('div');
         div.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:10px; border:1px solid #eee; border-radius:6px;';
         
         const nameSpan = document.createElement('span');
         nameSpan.style.fontWeight = '600';
-        nameSpan.textContent = data.name;
+        nameSpan.textContent = data.caseName;
         
         const actions = document.createElement('div');
         actions.style.display = 'flex';
@@ -5306,7 +5316,7 @@ window.addEventListener('DOMContentLoaded',()=>{buildTableHeaders();if(!document
         loadBtn.className = 'btn btn-primary btn-sm';
         loadBtn.textContent = 'Load';
         loadBtn.onclick = () => {
-          loadCaseFromFirestore(data.xmlData);
+          loadCaseFromFirestore(data.xmlText);
           closeCloudModal();
         };
         
@@ -5315,7 +5325,7 @@ window.addEventListener('DOMContentLoaded',()=>{buildTableHeaders();if(!document
         delBtn.textContent = 'Delete';
         delBtn.onclick = async () => {
           if(confirm('Delete this case?')) {
-            await deleteDoc(doc(db, "imo_cii_cases", docSnap.id));
+            await deleteDoc(doc(db, "cases", docSnap.id));
             loadFirestoreCases();
           }
         };
@@ -5327,6 +5337,9 @@ window.addEventListener('DOMContentLoaded',()=>{buildTableHeaders();if(!document
         div.appendChild(actions);
         listEl.appendChild(div);
       });
+      if (renderCount === 0) {
+        listEl.innerHTML = '<div style="color:var(--muted); font-size:13px;">No saved cases found for this calculator.</div>';
+      }
     } catch (err) {
       console.error(err);
       listEl.innerHTML = '<div style="color:red; font-size:13px;">Error loading cases.</div>';
