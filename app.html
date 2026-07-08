@@ -3413,8 +3413,7 @@
         </svg>
         <span>About Us</span>
       </button>
-      <button class="utility-btn" type="button" data-open-modal="helpModal" aria-haspopup="dialog"
-        aria-controls="helpModal">
+      <a class="utility-btn" href="help/index.html" style="text-decoration: none;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
           stroke-linejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="10"></circle>
@@ -3422,7 +3421,7 @@
           <path d="M12 17h.01"></path>
         </svg>
         <span>Help</span>
-      </button>
+      </a>
       <!-- Google Account Button -->
       <button class="utility-btn google-sign-btn" id="googleSignBtn" type="button" aria-label="Sign in with Google">
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" style="width:15px;height:15px;flex:none">
@@ -3788,60 +3787,7 @@
     </div>
   </div>
 
-  <div class="modal-overlay" id="helpModal" aria-hidden="true">
-    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
-      <div class="modal-drag-handle" aria-hidden="true"></div>
-      <div class="modal-header">
-        <div class="modal-title-wrap">
-          <div class="modal-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <path d="M9.09 9a3 3 0 1 1 5.82 1c0 2-3 3-3 3"></path>
-              <path d="M12 17h.01"></path>
-            </svg>
-          </div>
-          <div>
-            <h3 class="modal-title" id="helpTitle">Help</h3>
-            <p class="modal-subtitle">Access the user guide for quick reference and onboarding.</p>
-          </div>
-        </div>
-        <button class="modal-close" type="button" data-close-modal aria-label="Close Help window">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <path d="M18 6 6 18"></path>
-            <path d="m6 6 12 12"></path>
-          </svg>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="guide-panel">
-          <p class="guide-text">The user guide can be viewed online or downloaded directly from this popup.</p>
-          <div class="guide-actions">
-            <a class="guide-btn" href="NavCIIFuel_User_Guide.pdf" target="_blank" rel="noopener noreferrer">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12Z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
-              <span>View User Guide</span>
-            </a>
-            <a class="guide-btn secondary" href="NavCIIFuel_User_Guide.pdf" download>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <path d="m7 10 5 5 5-5"></path>
-                <path d="M12 15V3"></path>
-              </svg>
-              <span>Download User Guide</span>
-            </a>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="footer-close" type="button" data-close-modal>Close</button>
-      </div>
-    </div>
-  </div>
+
 
 
   <!-- ===== Google Profile Modal ===== -->
