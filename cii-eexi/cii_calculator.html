@@ -6862,8 +6862,8 @@
             try {
                 const parsed = window.parseXmlText ? window.parseXmlText(data.xmlText) : null;
                 // Try to guess capacity from parsed object if possible, otherwise leave as 0
-                if (parsed && parsed.shipDetails && parsed.shipDetails.capacity) {
-                    capacity = parseFloat(parsed.shipDetails.capacity) || 0;
+                if (parsed) {
+                    capacity = parseFloat(parsed.capacity) || (parsed.shipDetails && parseFloat(parsed.shipDetails.capacity)) || 0;
                 }
             } catch(e) {}
         }
@@ -6880,6 +6880,13 @@
       
       if (window.updateCloudBackupData) {
           window.updateCloudBackupData(casesArray);
+          const syncBadge = document.getElementById('cloudSyncBadge');
+          const syncTime = document.getElementById('cloudSyncTime');
+          if (syncBadge && syncTime) {
+              const now = new Date();
+              syncTime.textContent = 'today ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+              syncBadge.style.display = 'flex';
+          }
       }
     } catch (e) {
       console.error('Error fetching cases:', e);
@@ -11522,7 +11529,7 @@
                 <h2>Cloud Backup <span>· CII Maritime</span></h2>
             </div>
             <div class="cloud-header-right">
-                <span class="sync-badge"><i class="fas fa-check-circle"></i> Last sync: today 09:42</span>
+                <span class="sync-badge" id="cloudSyncBadge" style="display: none;"><i class="fas fa-check-circle"></i> Last sync: <span id="cloudSyncTime"></span></span>
                 <button class="btn-action save-btn" id="openSaveModalBtn"><i class="fas fa-save"></i> Save Vessel</button>
                 <button type="button" class="btn-action" onclick="closeCloudModal()" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); margin-left: 10px;"><i class="fas fa-times"></i> Close</button>
             </div>

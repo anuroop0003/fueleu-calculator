@@ -3584,7 +3584,9 @@ ${vesselsXml}
         reader.onerror = function () { showToast(`Error reading "${file.name}"`, 'error'); };
         reader.readAsText(file);
       });
-      el('importXmlInput').value = '';
+      if (el('importXmlInput')) {
+        el('importXmlInput').value = '';
+      }
     }
 
     function parseVesselNode(node) {
@@ -3999,7 +4001,10 @@ ${buildReportBodyHTML(data)}
       el('clearAllBtn').addEventListener('click', clearAll);
       el('viewAllBtn').addEventListener('click', showAllVesselsPopup);
       el('saveXmlBtn').addEventListener('click', saveXmlWithMeta);
-      el('importXmlInput').addEventListener('change', function (e) { if (this.files && this.files.length) importXmlFiles(this.files); });
+      const importXmlInput = el('importXmlInput');
+      if (importXmlInput) {
+        importXmlInput.addEventListener('change', function (e) { if (this.files && this.files.length) importXmlFiles(this.files); });
+      }
       el('importCloudBtn').addEventListener('click', openCloudImportModal);
 
       el('sortField').addEventListener('change', function () { sortState.field = this.value; sortState.dir = 'asc'; renderComparison(); });
