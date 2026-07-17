@@ -6496,9 +6496,9 @@
       }
     }
 
-    window.saveToFirestore = async function () {
+    window.saveToFirestore = async function (modalVesselName, modalYear) {
       const caseNameInput = document.getElementById('cloudSaveName');
-      const caseName = caseNameInput?.value?.trim();
+      const caseName = modalVesselName || caseNameInput?.value?.trim();
       if (!caseName) {
         alert('Please enter a case name.');
         return;
@@ -6511,8 +6511,8 @@
 
       try {
         const xmlText = window.generateStateXml();
-        const shipName = document.getElementById('shipName')?.value || '';
-        const reportingYear = document.getElementById('reportingYear')?.value || '';
+        const shipName = modalVesselName || document.getElementById('shipName')?.value || '';
+        const reportingYear = modalYear || document.getElementById('reportingYear')?.value || '';
         const caseId = `${user.uid}_${caseName.replace(/[^a-z0-9_\-]+/gi, '_')}`;
         const calcType = 'FuelEU';
 
@@ -6551,56 +6551,996 @@
     });
 
     window.openCloudModal = function () {
-      document.getElementById('cloudModal').classList.add('active');
-      const ship = document.getElementById('shipName')?.value || '';
-      const year = document.getElementById('reportingYear')?.value || '';
-      const defaultName = `${ship} ${year}`.trim() || 'My Case';
+    const cloudModal = document.getElementById('cloudModal');
+    if(cloudModal) cloudModal.classList.add('show');
+    const ship = document.getElementById('vesselName')?.value || '';
+    const year = document.getElementById('year')?.value || '';
+    const defaultName = `${ship} ${year}`.trim() || 'My Case';
 
-      const saveNameInput = document.getElementById('cloudSaveName');
-      if (saveNameInput) saveNameInput.value = defaultName;
+    const saveNameInput = document.getElementById('cloudSaveName');
+    if (saveNameInput) saveNameInput.value = defaultName;
+  };
 
-    };
-
-    window.closeCloudModal = function () {
-      document.getElementById('cloudModal').classList.remove('active');
-    };
-  </script>
-  </style>
+  window.closeCloudModal = function () {
+    const cloudModal = document.getElementById('cloudModal');
+    if(cloudModal) cloudModal.classList.remove('show');
+  };
+</script>
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
   <script defer src="/_vercel/insights/script.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+<!-- INJECTED CLOUD CSS -->
+<style>
+        /* Cloud modal variable overrides — FuelEU page doesn't define these */
+        #cloudModal {
+            --card: #0d1b2a;
+            --card2: #0a1524;
+            --chip: #1a2742;
+            --font: Inter, Segoe UI, Roboto, Arial, sans-serif;
+            --accent: #4f8cff;
+            --bad: #ff5c77;
+        }
+
+        /* Reset FuelEU global table styles inside cloud modal */
+        #cloudModal .backup-table {
+            border-collapse: collapse !important;
+            border-spacing: 0 !important;
+            border: none !important;
+            border-radius: 0 !important;
+            overflow: visible !important;
+        }
+        #cloudModal .backup-table thead th {
+            position: static !important;
+            background: rgba(26, 39, 66, .55) !important;
+        }
+        #cloudModal .backup-table tbody td {
+            background: transparent !important;
+        }
+        #cloudModal .backup-table tbody tr:nth-child(odd) td {
+            background: transparent !important;
+        }
+        #cloudModal .backup-table tbody tr:hover td {
+            background: rgba(26, 39, 66, .35) !important;
+        }
+
+        /* Reset FuelEU global button styles inside cloud modal */
+        #cloudModal .cloud-footer button,
+        #cloudModal .table-actions button {
+            border-radius: 40px !important;
+            padding: 6px 14px !important;
+        }
+        #cloudModal .cloud-footer .pagination button {
+            padding: 0 !important;
+            width: 34px !important;
+            height: 34px !important;
+        }
+
+
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(3, 8, 18, .54);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 20px 20px 24px;
+            overflow-y: auto;
+            z-index: 99999;
+            pointer-events: none;
+        }
+        .modal-backdrop.show {
+            display: flex !important;
+        }
+
+        #cloudModal {
+            background: rgba(0, 0, 0, 0.65) !important;
+            backdrop-filter: blur(5px) !important;
+        }
+
+
+        .cloud-card {
+            max-width: 1100px;
+            width: 100%;
+            background: var(--card);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--line);
+            overflow: hidden;
+            color: var(--text);
+        }
+        .cloud-header {
+            background: linear-gradient(180deg, rgba(18, 28, 46, .92), rgba(15, 23, 42, .92));
+            padding: 22px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            border-bottom: 1px solid var(--line);
+        }
+        .cloud-header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .cloud-header-left i {
+            font-size: 28px;
+            color: var(--accent);
+            background: rgba(79, 140, 255, 0.15);
+            padding: 10px;
+            border-radius: 14px;
+        }
+        .cloud-header-left h2 {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: -0.3px;
+            margin: 0;
+        }
+        .cloud-header-left h2 span {
+            font-weight: 400;
+            color: var(--muted);
+            font-size: 16px;
+            margin-left: 8px;
+        }
+        .cloud-header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .cloud-header-right .sync-badge {
+            background: rgba(79, 140, 255, 0.18);
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 500;
+            padding: 6px 16px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(79, 140, 255, 0.15);
+        }
+        .cloud-header-right .sync-badge i {
+            font-size: 14px;
+        }
+        .btn-action {
+            background: rgba(26, 39, 66, .55);
+            border: 1px solid var(--line);
+            color: var(--text);
+            font-weight: 500;
+            font-size: 14px;
+            padding: 8px 18px;
+            border-radius: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            font-family: var(--font);
+        }
+        .btn-action:hover {
+            background: rgba(26, 39, 66, .8);
+        }
+        .btn-action.save-btn {
+            background: linear-gradient(180deg, rgba(30, 201, 113, .30), rgba(30, 201, 113, .14));
+            border-color: rgba(110, 235, 170, .40);
+            color: #effff4;
+        }
+        .btn-action.save-btn:hover {
+            background: linear-gradient(180deg, rgba(30, 201, 113, .40), rgba(30, 201, 113, .20));
+        }
+        .cloud-toolbar {
+            padding: 20px 32px 16px 32px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            background: var(--bg);
+            border-bottom: 1px solid var(--line);
+        }
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .search-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .search-wrapper i {
+            position: absolute;
+            left: 14px;
+            color: var(--muted);
+            font-size: 16px;
+            pointer-events: none;
+        }
+        .search-wrapper input {
+            height: 44px;
+            padding: 0 16px 0 44px;
+            border: 1px solid var(--line);
+            border-radius: 40px;
+            font-size: 14px;
+            font-family: var(--font);
+            width: 260px;
+            background: rgba(11, 18, 32, .55);
+            transition: border 0.2s, box-shadow 0.2s;
+            color: var(--text);
+        }
+        .search-wrapper input:focus {
+            outline: none;
+            border-color: rgba(79, 140, 255, .85);
+            box-shadow: 0 0 0 3px rgba(79, 140, 255, .18);
+        }
+        .search-wrapper input::placeholder {
+            color: var(--muted);
+        }
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .filter-group label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .filter-group label i {
+            color: var(--muted);
+            font-size: 14px;
+        }
+        .filter-group select {
+            height: 44px;
+            padding: 0 36px 0 16px;
+            border: 1px solid var(--line);
+            border-radius: 40px;
+            font-size: 14px;
+            font-family: var(--font);
+            background: rgba(11, 18, 32, .55) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23a9b6d3' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 16px center;
+            background-size: 12px 8px;
+            appearance: none;
+            cursor: pointer;
+            color: var(--text);
+            min-width: 130px;
+            transition: border 0.2s;
+        }
+        .filter-group select:focus {
+            outline: none;
+            border-color: rgba(79, 140, 255, .85);
+            box-shadow: 0 0 0 3px rgba(79, 140, 255, .18);
+        }
+        .toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .toolbar-right .result-count {
+            font-size: 13px;
+            color: var(--text);
+            background: var(--chip);
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-weight: 500;
+            border: 1px solid var(--line);
+        }
+        .btn-clear-filters {
+            background: transparent;
+            border: 1px solid var(--line);
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 500;
+            padding: 7px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: var(--font);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-clear-filters:hover {
+            background: rgba(26, 39, 66, .55);
+            color: var(--text);
+        }
+        .table-wrap {
+            padding: 8px 32px 32px 32px;
+            overflow-x: auto;
+            background: var(--bg);
+        }
+        .backup-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        .backup-table thead th {
+            text-align: left;
+            padding: 16px 12px 14px 12px;
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: var(--muted);
+            border-bottom: 1px solid var(--line);
+            background: rgba(26, 39, 66, .55);
+        }
+        .backup-table tbody td {
+            padding: 16px 12px;
+            border-bottom: 1px solid var(--line);
+            color: var(--text);
+            vertical-align: middle;
+        }
+        .backup-table tbody tr:hover {
+            background: rgba(26, 39, 66, .35);
+        }
+        .vessel-name-cell {
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .vessel-name-cell i {
+            color: var(--accent);
+            font-size: 16px;
+            opacity: 0.7;
+        }
+        .badge-year {
+            background: rgba(26, 39, 66, .6);
+            color: var(--muted);
+            font-weight: 600;
+            font-size: 12px;
+            padding: 3px 12px;
+            border-radius: 40px;
+            display: inline-block;
+            letter-spacing: 0.2px;
+            border: 1px solid var(--line);
+        }
+        .table-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            justify-content: flex-end;
+        }
+        .table-actions button {
+            background: transparent;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 40px;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            font-family: var(--font);
+        }
+        .table-actions button:hover {
+            background: rgba(26, 39, 66, .55);
+            color: var(--text);
+        }
+        .table-actions button.open-btn {
+            background: rgba(79, 140, 255, .15);
+            color: var(--accent);
+            border: 1px solid rgba(79, 140, 255, .3);
+        }
+        .table-actions button.open-btn:hover {
+            background: rgba(79, 140, 255, .25);
+        }
+        .table-actions button.delete-btn {
+            background: rgba(255, 92, 119, .15);
+            color: var(--bad);
+            border: 1px solid rgba(255, 92, 119, .3);
+        }
+        .table-actions button.delete-btn:hover {
+            background: rgba(255, 92, 119, .25);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px 40px;
+            color: var(--muted);
+            background: var(--bg);
+        }
+        .empty-state i {
+            font-size: 48px;
+            color: var(--line);
+            margin-bottom: 16px;
+            display: block;
+        }
+        .empty-state h4 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+            margin-top: 0;
+        }
+        .empty-state p {
+            font-size: 14px;
+            color: var(--muted);
+            margin: 0;
+        }
+        .cloud-footer {
+            padding: 14px 32px;
+            border-top: 1px solid var(--line);
+            background: var(--card2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+        .cloud-footer .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .cloud-footer .footer-left i {
+            color: var(--muted);
+        }
+        .cloud-footer .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .cloud-footer .pagination {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .cloud-footer .pagination button {
+            background: transparent;
+            border: 1px solid transparent;
+            width: 34px;
+            height: 34px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--muted);
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: var(--font);
+        }
+        .cloud-footer .pagination button:hover {
+            background: rgba(26, 39, 66, .55);
+            border-color: var(--line);
+            color: var(--text);
+        }
+        .cloud-footer .pagination button.active-page {
+            background: rgba(79, 140, 255, .15);
+            color: var(--accent);
+            border-color: rgba(79, 140, 255, .3);
+        }
+        .cloud-footer .pagination button:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100000;
+            padding: 20px;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-box {
+            background: var(--card);
+            max-width: 480px;
+            width: 100%;
+            border-radius: 28px;
+            padding: 32px 30px 28px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--line);
+            animation: modalFade 0.25s ease;
+        }
+        @keyframes modalFade {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .modal-box h3 {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 0;
+        }
+        .modal-box h3 i {
+            color: var(--accent);
+        }
+        .modal-box .sub {
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 24px;
+        }
+        .modal-box label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--muted);
+            display: block;
+            margin-top: 16px;
+            margin-bottom: 4px;
+        }
+        .modal-box input,
+        .modal-box select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: var(--font);
+            background: rgba(11, 18, 32, .55);
+            transition: border 0.2s;
+            color: var(--text);
+        }
+        .modal-box input:focus,
+        .modal-box select:focus {
+            outline: none;
+            border-color: rgba(79, 140, 255, .85);
+            box-shadow: 0 0 0 3px rgba(79, 140, 255, .18);
+        }
+        .modal-box .form-row {
+            display: flex;
+            gap: 16px;
+        }
+        .modal-box .form-row > div {
+            flex: 1;
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 28px;
+        }
+        .modal-actions button {
+            padding: 10px 28px;
+            border-radius: 40px;
+            border: none;
+            font-weight: 500;
+            font-size: 14px;
+            font-family: var(--font);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .modal-actions .btn-cancel {
+            background: rgba(26, 39, 66, .55);
+            color: var(--muted);
+            border: 1px solid var(--line);
+        }
+        .modal-actions .btn-cancel:hover {
+            background: rgba(26, 39, 66, .8);
+            color: var(--text);
+        }
+        .modal-actions .btn-submit {
+            background: linear-gradient(180deg, rgba(30, 201, 113, .30), rgba(30, 201, 113, .14));
+            border: 1px solid rgba(110, 235, 170, .40);
+            color: #effff4;
+        }
+        .modal-actions .btn-submit:hover {
+            background: linear-gradient(180deg, rgba(30, 201, 113, .40), rgba(30, 201, 113, .20));
+        }
+        @media (max-width: 800px) {
+            .cloud-header { padding: 18px 20px; }
+            .cloud-toolbar { padding: 16px 20px 12px 20px; flex-direction: column; align-items: stretch; }
+            .toolbar-left { flex-direction: column; align-items: stretch; width: 100%; }
+            .search-wrapper input { width: 100%; }
+            .filter-group { width: 100%; justify-content: space-between; }
+            .filter-group select { flex: 1; min-width: 0; }
+            .toolbar-right { justify-content: space-between; width: 100%; }
+            .table-wrap { padding: 8px 16px 24px 16px; }
+            .cloud-footer { padding: 14px 20px; flex-direction: column; align-items: stretch; gap: 10px; }
+            .cloud-footer .footer-left { flex-wrap: wrap; }
+            .cloud-footer .footer-right { justify-content: center; }
+        }
+        @media (max-width: 500px) {
+            .cloud-header-left h2 { font-size: 18px; }
+            .cloud-header-left h2 span { font-size: 13px; display: block; margin-left: 0; }
+            .cloud-header-right .sync-badge { font-size: 12px; padding: 4px 12px; }
+            .btn-action { font-size: 12px; padding: 6px 14px; }
+            .backup-table thead th, .backup-table tbody td { padding: 12px 8px; font-size: 13px; }
+            .table-actions button { font-size: 12px; padding: 4px 10px; }
+            .modal-box { padding: 24px 18px; }
+            .modal-box .form-row { flex-direction: column; gap: 0; }
+        }
+        .table-wrap::-webkit-scrollbar { height: 6px; }
+        .table-wrap::-webkit-scrollbar-track { background: rgba(11, 18, 32, .55); border-radius: 10px; }
+        .table-wrap::-webkit-scrollbar-thumb { background: rgba(26, 39, 66, .55); border-radius: 10px; }
+        .table-wrap::-webkit-scrollbar-thumb:hover { background: rgba(79, 140, 255, .3); }
+        .text-muted { color: var(--muted); font-weight: 400; }
+
+</style>
 </head>
 
 <body>
 
-  <div class="modal-overlay" id="cloudModal">
-    <div class="modal-card" style="width: min(700px, 100%);">
-      <div
-        style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px;">
-        <h3 style="margin: 0; font-size: 20px; color: #fff; display: flex; align-items: center; gap: 8px;">
-          <span style="color: var(--accent);">☁</span> Cloud Backup & Saves
-        </h3>
-        <button onclick="closeCloudModal()"
-          style="background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer;">✕</button>
-      </div>
-      <div id="tabContentFirestore">
-        <div style="display: flex; gap: 10px; margin-bottom: 16px;">
-          <input type="text" id="cloudSaveName" placeholder="Enter case name to save (e.g., Vessel A 2025)"
-            style="flex: 1; padding: 10px 12px; font-size: 13px;">
-          <button class="btn btn-primary" onclick="saveToFirestore()" style="font-size: 13px; border-radius: 14px;">Save
-            Case</button>
+  <!-- CLOUD MODAL -->
+<div class="modal-backdrop" id="cloudModal" role="dialog" aria-modal="true" aria-labelledby="cloudModalTitle" onclick="if(event.target===this)this.classList.remove('show')">
+  <div style="margin: auto; pointer-events: auto; width: 100%; max-width: 1100px; display: flex; justify-content: center; align-items: center; max-height: 90vh; overflow-y: auto; border-radius: 24px;">
+    <div class="cloud-card">
+        <!-- Header -->
+        <div class="cloud-header">
+            <div class="cloud-header-left">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h2>Cloud Backup <span>· FuelEU Maritime</span></h2>
+            </div>
+            <div class="cloud-header-right">
+                <span class="sync-badge"><i class="fas fa-check-circle"></i> Last sync: today 09:42</span>
+                <button class="btn-action save-btn" id="openSaveModalBtn"><i class="fas fa-save"></i> Save Vessel</button>
+                <button type="button" class="btn-action" onclick="closeCloudModal()" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); margin-left: 10px;"><i class="fas fa-times"></i> Close</button>
+            </div>
         </div>
-        <div id="firestoreCasesList"
-          style="max-height: 250px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; background: rgba(255,255,255,0.01);">
-          <div style="padding: 16px; text-align: center; color: var(--muted); font-size: 13px;">Loading cases...</div>
+
+        <!-- Toolbar -->
+        <div class="cloud-toolbar">
+            <div class="toolbar-left">
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search vessel or year..." autocomplete="off" />
+                </div>
+                <div class="filter-group">
+                    <label><i class="far fa-calendar-alt"></i> Year</label>
+                    <select id="yearFilter">
+                        <option value="all" selected>All years</option>
+                        <option value="2030">2030</option>
+                        <option value="2029">2029</option>
+                        <option value="2028">2028</option>
+                        <option value="2027">2027</option>
+                        <option value="2026">2026</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                    </select>
+                </div>
+            </div>
+            <div class="toolbar-right">
+                <span class="result-count" id="resultCount">0 backups</span>
+                <button class="btn-clear-filters" id="clearFiltersBtn"><i class="fas fa-times"></i> Clear</button>
+                <button type="button" class="btn-action" onclick="closeCloudModal()" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); margin-left: 10px;"><i class="fas fa-times"></i> Close</button>
+            </div>
         </div>
-      </div>
-      <div class="modal-actions" style="margin-top: 18px;">
-        <button class="btn btn-secondary" onclick="closeCloudModal()">Close</button>
-      </div>
+
+        <!-- Table -->
+        <div class="table-wrap">
+            <table class="backup-table" id="backupTable">
+                <thead>
+                    <tr>
+                        <th>Vessel</th>
+                        <th>Year</th>
+                        <th>Capacity (DWT)</th>
+                        <th>Backup date</th>
+                        <th style="text-align:right;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+            <div class="empty-state" id="emptyState" style="display:block;">
+                <i class="fas fa-cloud"></i>
+                <h4>No backups found</h4>
+                <p>Try adjusting your search or save a new vessel.</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="cloud-footer">
+            <div class="footer-left">
+                <i class="fas fa-database"></i>
+                <span id="footerCount">0 backups</span>
+            </div>
+            <div class="footer-right">
+                <div class="pagination" id="paginationContainer">
+                    <button id="prevPageBtn" disabled><i class="fas fa-chevron-left"></i></button>
+                    <!-- page buttons injected here -->
+                    <button id="nextPageBtn" disabled><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </div>
     </div>
   </div>
+</div>
+<div class="modal-overlay" id="saveModal">
+        <div class="modal-box">
+            <h3><i class="fas fa-save"></i> Save Vessel</h3>
+            <p class="sub">Enter vessel details to add it to the backup list.</p>
+            <label for="modalVessel">Vessel Name <span class="text-muted">*</span></label>
+            <input type="text" id="modalVessel" placeholder="e.g., Ever Ace" />
+            <div class="form-row">
+                <div>
+                    <label for="modalYear">Year <span class="text-muted">*</span></label>
+                    <select id="modalYear">
+                        <option value="2030">2030</option>
+                        <option value="2029">2029</option>
+                        <option value="2028">2028</option>
+                        <option value="2027">2027</option>
+                        <option value="2026">2026</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                        <option value="2023" selected>2023</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="modalCapacity">Capacity (DWT) <span class="text-muted">*</span></label>
+                    <input type="number" id="modalCapacity" placeholder="e.g., 37169" />
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" id="closeModalBtn">Cancel</button>
+                <button class="btn-submit" id="saveBackupBtn">Save Vessel</button>
+            </div>
+        </div>
+    </div>
+<script>
+        (function() {
+            'use strict';
+
+            // ─── MOCK DATA ──────────────────────────────────────────────
+            // Removed all sample data as requested
+            let mockBackups = [];
+
+            let currentData = [...mockBackups];
+            
+            window.updateCloudBackupData = function(data) {
+                currentData = data || [];
+                applyFilters();
+            };
+
+            let filteredData = [...mockBackups];
+            let currentPage = 1;
+            const rowsPerPage = 5;
+
+            // DOM refs
+            const tbody = document.getElementById('tableBody');
+            const emptyState = document.getElementById('emptyState');
+            const searchInput = document.getElementById('searchInput');
+            const yearFilter = document.getElementById('yearFilter');
+            const clearBtn = document.getElementById('clearFiltersBtn');
+            const resultCount = document.getElementById('resultCount');
+            const footerCount = document.getElementById('footerCount');
+            const prevBtn = document.getElementById('prevPageBtn');
+            const nextBtn = document.getElementById('nextPageBtn');
+            const paginationContainer = document.getElementById('paginationContainer');
+
+            // Modal refs
+            const modalOverlay = document.getElementById('saveModal');
+            const openModalBtn = document.getElementById('openSaveModalBtn');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const saveBackupBtn = document.getElementById('saveBackupBtn');
+            const modalVessel = document.getElementById('modalVessel');
+            const modalYear = document.getElementById('modalYear');
+            const modalCapacity = document.getElementById('modalCapacity');
+
+            // ─── HELPERS ────────────────────────────────────────────────
+            function formatDate(dateStr) {
+                const d = new Date(dateStr + 'T00:00:00');
+                return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+            }
+
+            function getTodayStr() {
+                return new Date().toISOString().slice(0, 10);
+            }
+
+            // ─── FILTER ──────────────────────────────────────────────────
+            function applyFilters() {
+                const searchTerm = searchInput.value.trim().toLowerCase();
+                const yearVal = yearFilter.value;
+
+                filteredData = currentData.filter(item => {
+                    const vesselMatch = item.vessel.toLowerCase().includes(searchTerm);
+                    const yearMatch = item.year.toString().includes(searchTerm);
+                    const searchPass = searchTerm === '' || vesselMatch || yearMatch;
+                    const yearPass = yearVal === 'all' || String(item.year) === yearVal;
+                    return searchPass && yearPass;
+                });
+
+                currentPage = 1;
+                renderTable();
+                renderPagination();
+                updateCounts();
+            }
+
+            // ─── RENDER TABLE ───────────────────────────────────────────
+            function renderTable() {
+                const start = (currentPage - 1) * rowsPerPage;
+                const pageItems = filteredData.slice(start, start + rowsPerPage);
+
+                if (pageItems.length === 0) {
+                    tbody.innerHTML = '';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+                emptyState.style.display = 'none';
+
+                let html = '';
+                pageItems.forEach(item => {
+                    html += `
+                        <tr>
+                            <td>
+                                <div class="vessel-name-cell">
+                                    <i class="fas fa-ship"></i>
+                                    ${item.vessel}
+                                </div>
+                            </td>
+                            <td><span class="badge-year">${item.year}</span></td>
+                            <td>${item.capacity.toLocaleString()}</td>
+                            <td>${formatDate(item.date)}</td>
+                            <td style="text-align:right;">
+                                <div class="table-actions">
+                                    <button class="open-btn" data-id="${item.id}">Open</button>
+                                    <button class="delete-btn" data-id="${item.id}"><i class="fas fa-trash-alt"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                tbody.innerHTML = html;
+
+                // Attach action listeners
+                tbody.querySelectorAll('.open-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const id = btn.dataset.id;
+                        const item = currentData.find(x => String(x.id) === String(id));
+                        if (item && item.xmlText) {
+                            try {
+                                const obj = window.parseXmlText(item.xmlText);
+                                window.applyImportedState(obj);
+                                window.closeCloudModal();
+                                alert(`Case "${item.vessel}" successfully loaded from cloud.`);
+                            } catch (e) {
+                                alert('Failed to load case data: ' + e.message);
+                            }
+                        }
+                    });
+                });
+                tbody.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        if (window.handleDeleteCloudCase) {
+                            window.handleDeleteCloudCase(btn.dataset.id);
+                        }
+                    });
+                });
+            }
+
+            // ─── PAGINATION (dynamic) ──────────────────────────────────
+            function renderPagination() {
+                const totalPages = Math.ceil(filteredData.length / rowsPerPage) || 1;
+
+                // Remove existing page buttons (keep prev and next)
+                const pageButtons = paginationContainer.querySelectorAll('.page-btn');
+                pageButtons.forEach(btn => btn.remove());
+
+                // Create new page buttons
+                for (let i = 1; i <= totalPages; i++) {
+                    const btn = document.createElement('button');
+                    btn.textContent = i;
+                    btn.className = 'page-btn';
+                    if (i === currentPage) btn.classList.add('active-page');
+                    btn.dataset.page = i;
+                    btn.addEventListener('click', () => {
+                        goToPage(i);
+                    });
+                    // Insert before next button
+                    paginationContainer.insertBefore(btn, nextBtn);
+                }
+
+                // Update prev/next states
+                prevBtn.disabled = currentPage === 1;
+                nextBtn.disabled = currentPage === totalPages || totalPages === 0;
+            }
+
+            function goToPage(page) {
+                const totalPages = Math.ceil(filteredData.length / rowsPerPage) || 1;
+                if (page < 1) page = 1;
+                if (page > totalPages) page = totalPages;
+                if (currentPage !== page) {
+                    currentPage = page;
+                    renderTable();
+                    renderPagination();
+                }
+            }
+
+            // ─── COUNTS ──────────────────────────────────────────────────
+            function updateCounts() {
+                const total = filteredData.length;
+                const label = total === 1 ? 'backup' : 'backups';
+                resultCount.textContent = `${total} ${label}`;
+                footerCount.textContent = `${total} ${label}`;
+            }
+
+            // ─── RESET FILTERS ─────────────────────────────────────────
+            function resetFilters() {
+                searchInput.value = '';
+                yearFilter.value = 'all';
+                applyFilters();
+            }
+
+            // ─── SAVE VESSEL (renamed from saveNewBackup) ─────────────
+            async function saveVessel() {
+                const vessel = modalVessel.value.trim();
+                const year = modalYear.value;
+
+                if (!vessel) {
+                    alert('Please enter a vessel name.');
+                    return;
+                }
+
+                if (window.saveToFirestore) {
+                    const prevBtnText = saveBackupBtn.textContent;
+                    saveBackupBtn.textContent = 'Saving...';
+                    saveBackupBtn.disabled = true;
+                    try {
+                        await window.saveToFirestore(vessel, year);
+                        closeModal();
+                        modalVessel.value = '';
+                        modalCapacity.value = '';
+                    } finally {
+                        saveBackupBtn.textContent = prevBtnText;
+                        saveBackupBtn.disabled = false;
+                    }
+                }
+            }
+
+            // ─── MODAL CONTROLS ─────────────────────────────────────────
+            function openModal() {
+                modalOverlay.classList.add('active');
+                modalVessel.focus();
+            }
+
+            function closeModal() {
+                modalOverlay.classList.remove('active');
+            }
+
+            // ─── EVENT LISTENERS ──────────────────────────────────────
+            searchInput.addEventListener('input', applyFilters);
+            yearFilter.addEventListener('change', applyFilters);
+            clearBtn.addEventListener('click', resetFilters);
+
+            prevBtn.addEventListener('click', () => goToPage(currentPage - 1));
+            nextBtn.addEventListener('click', () => goToPage(currentPage + 1));
+
+            openModalBtn.addEventListener('click', openModal);
+            closeModalBtn.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) closeModal();
+            });
+            saveBackupBtn.addEventListener('click', saveVessel);
+
+            document.querySelectorAll('#saveModal input, #saveModal select').forEach(field => {
+                field.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        saveVessel();
+                    }
+                });
+            });
+
+            // ─── INIT ────────────────────────────────────────────────────
+            applyFilters();
+        })();
+    </script>
+<!-- /CLOUD MODAL -->
 
   <div class="print-cover">
     <div class="print-navciifuel-top"><img
